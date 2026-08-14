@@ -1,6 +1,6 @@
 <div align="center">
 
-# 📋 Project Foundation
+#  Project Foundation
 
 ## MediOrchestrator AI
 
@@ -29,7 +29,7 @@
 
 ---
 
-## 🎯 Project Vision
+##  Project Vision
 
 **Build an AI platform where specialized healthcare agents collaborate to deliver accurate, context-aware medical guidance.**
 
@@ -68,7 +68,7 @@ mindmap
 
 ---
 
-## 🔍 Problem Statement
+##  Problem Statement
 
 Healthcare information seekers face a fundamental problem:
 
@@ -79,17 +79,17 @@ graph LR
     B --> D[Google Search]
     B --> E[Telemedicine]
     
-    C --> F[❌ No Specialization]
-    C --> G[❌ Hallucinations]
-    C --> H[❌ No Context]
+    C --> F[ No Specialization]
+    C --> G[ Hallucinations]
+    C --> H[ No Context]
     
-    D --> I[❌ Information Overload]
-    D --> J[❌ No Personalization]
-    D --> K[❌ Misinformation Risk]
+    D --> I[ Information Overload]
+    D --> J[ No Personalization]
+    D --> K[ Misinformation Risk]
     
-    E --> L[❌ Expensive]
-    E --> M[❌ Long Wait Times]
-    E --> N[❌ Limited Availability]
+    E --> L[ Expensive]
+    E --> M[ Long Wait Times]
+    E --> N[ Limited Availability]
 
     style F fill:#FF6B6B,stroke:#FF4444,color:#fff
     style G fill:#FF6B6B,stroke:#FF4444,color:#fff
@@ -118,7 +118,7 @@ graph LR
 
 ---
 
-## ⚡ Current Challenges in Healthcare AI
+##  Current Challenges in Healthcare AI
 
 ```mermaid
 graph TB
@@ -162,7 +162,7 @@ graph TB
 
 ---
 
-## 📊 Existing Solutions & Gap Analysis
+##  Existing Solutions & Gap Analysis
 
 ```mermaid
 graph TB
@@ -188,11 +188,11 @@ graph TB
     D --> L4
     E --> L1
 
-    MO[MediOrchestrator AI] --> S1[Multi-Domain ✅]
-    MO --> S2[Agentic Architecture ✅]
-    MO --> S3[RAG Pipeline ✅]
-    MO --> S4[Conversation Memory ✅]
-    MO --> S5[Multi-LLM Support ✅]
+    MO[MediOrchestrator AI] --> S1[Multi-Domain ]
+    MO --> S2[Agentic Architecture ]
+    MO --> S3[RAG Pipeline ]
+    MO --> S4[Conversation Memory ]
+    MO --> S5[Multi-LLM Support ]
 
     style MO fill:#27AE60,stroke:#1E8449,color:#fff
     style S1 fill:#2ECC71,stroke:#27AE60,color:#fff
@@ -204,23 +204,23 @@ graph TB
 
 | Feature | Ada Health | Babylon | ChatGPT | WebMD | **MediOrchestrator AI** |
 |---|---|---|---|---|---|
-| Multi-Domain Agents | ❌ | ❌ | ❌ | ❌ | ✅ |
-| RAG Knowledge Base | ❌ | Partial | ❌ | ❌ | ✅ |
-| Multi-LLM Support | ❌ | ❌ | ❌ | ❌ | ✅ |
-| Conversation Memory | ❌ | Limited | Limited | ❌ | ✅ |
-| Intent-Based Routing | ❌ | ❌ | ❌ | ❌ | ✅ |
-| Agent Collaboration | ❌ | ❌ | ❌ | ❌ | ✅ |
-| Response Validation | ❌ | Partial | ❌ | ❌ | ✅ |
-| Open Architecture | ❌ | ❌ | ❌ | ❌ | ✅ |
-| Confidence Scoring | ❌ | ❌ | ❌ | ❌ | ✅ |
-| Source Citations | ❌ | ❌ | ❌ | Partial | ✅ |
+| Multi-Domain Agents |  |  |  |  |  |
+| RAG Knowledge Base |  | Partial |  |  |  |
+| Multi-LLM Support |  |  |  |  |  |
+| Conversation Memory |  | Limited | Limited |  |  |
+| Intent-Based Routing |  |  |  |  |  |
+| Agent Collaboration |  |  |  |  |  |
+| Response Validation |  | Partial |  |  |  |
+| Open Architecture |  |  |  |  |  |
+| Confidence Scoring |  |  |  |  |  |
+| Source Citations |  |  |  | Partial |  |
 
 > [!NOTE]
 > MediOrchestrator AI is not a replacement for professional medical advice. It is a demonstration of advanced agentic AI architecture applied to healthcare information delivery.
 
 ---
 
-## 🎯 Objectives
+##  Objectives
 
 ### Primary Objectives
 
@@ -261,7 +261,7 @@ graph LR
 
 ---
 
-## 📐 Scope
+##  Scope
 
 ### In Scope
 
@@ -314,25 +314,25 @@ graph TB
 
 ---
 
-## 👥 Target Users
+##  Target Users
 
 ```mermaid
 graph TB
     subgraph "Primary Users"
-        A[🧑 Health Information Seekers]
-        B[🧑‍⚕️ Healthcare Students]
-        C[📚 Medical Researchers]
+        A[ Health Information Seekers]
+        B[ Healthcare Students]
+        C[ Medical Researchers]
     end
 
     subgraph "Secondary Users"
-        D[👨‍💼 Healthcare Administrators]
-        E[🔧 System Administrators]
-        F[👨‍💻 Developers / Extensibility]
+        D[ Healthcare Administrators]
+        E[ System Administrators]
+        F[ Developers / Extensibility]
     end
 
     subgraph "Stakeholders"
-        G[🎓 Academic Mentors]
-        H[💼 Industry Evaluators]
+        G[ Academic Mentors]
+        H[ Industry Evaluators]
     end
 ```
 
@@ -346,36 +346,36 @@ graph TB
 
 ---
 
-## ⭐ Project Features
+##  Project Features
 
 ### Feature Matrix
 
 ```mermaid
 graph TB
     subgraph "AI Features"
-        F1[🧠 AI Orchestrator]
-        F2[🎯 Intent Classification]
-        F3[🤖 12 Specialized Agents]
-        F4[📚 RAG Pipeline]
-        F5[💬 Conversation Memory]
-        F6[✅ Response Validation]
-        F7[📊 Confidence Scoring]
+        F1[ AI Orchestrator]
+        F2[ Intent Classification]
+        F3[ 12 Specialized Agents]
+        F4[ RAG Pipeline]
+        F5[ Conversation Memory]
+        F6[ Response Validation]
+        F7[ Confidence Scoring]
     end
 
     subgraph "Platform Features"
-        F8[🔐 Authentication]
-        F9[📄 Report Upload & Analysis]
-        F10[📈 Health Dashboard]
-        F11[💻 Admin Panel]
-        F12[🔍 Search & History]
+        F8[ Authentication]
+        F9[ Report Upload & Analysis]
+        F10[ Health Dashboard]
+        F11[ Admin Panel]
+        F12[ Search & History]
     end
 
     subgraph "Technical Features"
-        F13[🐳 Containerized Deployment]
-        F14[🔄 CI/CD Pipeline]
-        F15[📊 Monitoring & Logging]
-        F16[🛡️ Security Layer]
-        F17[🔌 Extensible Architecture]
+        F13[ Containerized Deployment]
+        F14[ CI/CD Pipeline]
+        F15[ Monitoring & Logging]
+        F16[ Security Layer]
+        F17[ Extensible Architecture]
     end
 ```
 
@@ -398,7 +398,7 @@ graph TB
 
 ---
 
-## 🛠 Technology Overview
+##  Technology Overview
 
 ### Technology Architecture
 
@@ -483,7 +483,7 @@ graph TB
 
 ---
 
-## 🔬 Research Opportunities
+##  Research Opportunities
 
 ```mermaid
 mindmap
@@ -522,7 +522,7 @@ mindmap
 
 ---
 
-## 📈 Expected Outcomes
+##  Expected Outcomes
 
 ### Deliverables
 
@@ -548,7 +548,7 @@ mindmap
 
 ---
 
-## ✅ Success Criteria
+##  Success Criteria
 
 ```mermaid
 graph LR
@@ -573,9 +573,9 @@ graph LR
         P4[Research contributions]
     end
 
-    T1 & T2 & T3 & T4 --> Pass1[✅ Technical]
-    A1 & A2 & A3 & A4 --> Pass2[✅ AI]
-    P1 & P2 & P3 & P4 --> Pass3[✅ Project]
+    T1 & T2 & T3 & T4 --> Pass1[ Technical]
+    A1 & A2 & A3 & A4 --> Pass2[ AI]
+    P1 & P2 & P3 & P4 --> Pass3[ Project]
 
     style Pass1 fill:#27AE60,stroke:#1E8449,color:#fff
     style Pass2 fill:#27AE60,stroke:#1E8449,color:#fff
@@ -584,53 +584,11 @@ graph LR
 
 ---
 
-## 🔄 High-Level Workflow
+##  High-Level Workflow
 
 ### User Query Flow
 
-```mermaid
-sequenceDiagram
-    actor User
-    participant UI as React Frontend
-    participant GW as API Gateway
-    participant Auth as Auth Service
-    participant Orch as AI Orchestrator
-    participant IC as Intent Classifier
-    participant Agent as Healthcare Agent
-    participant RAG as RAG Pipeline
-    participant VDB as Vector DB
-    participant LLM as LLM Provider
-    participant Mem as Memory Store
-    participant Val as Validator
 
-    User->>UI: Enters health query
-    UI->>GW: POST /api/v1/query
-    GW->>Auth: Validate JWT
-    Auth-->>GW: ✅ Authenticated
-    GW->>Orch: Forward query
-    
-    Orch->>IC: Classify intent
-    IC-->>Orch: Domain + confidence
-    Orch->>Mem: Fetch conversation history
-    Mem-->>Orch: Previous context
-    
-    Orch->>Agent: Route to specialist
-    Agent->>RAG: Retrieve knowledge
-    RAG->>VDB: Semantic search
-    VDB-->>RAG: Relevant documents
-    RAG->>LLM: Generate response
-    LLM-->>RAG: Raw response
-    RAG-->>Agent: Grounded response
-    
-    Agent->>Val: Validate response
-    Val-->>Agent: ✅ Validated
-    Agent-->>Orch: Final response
-    
-    Orch->>Mem: Store conversation
-    Orch-->>GW: Response + metadata
-    GW-->>UI: JSON response
-    UI-->>User: Display answer + sources
-```
 
 ### System Startup Flow
 
@@ -656,7 +614,7 @@ graph TB
     
     API --> Agents[Initialize Agents]
     Agents --> Orch[Start Orchestrator]
-    Orch --> Health[Health Check ✅]
+    Orch --> Health[Health Check ]
     Health --> Ready([System Ready])
 
     style Start fill:#3498DB,stroke:#2E86C1,color:#fff
@@ -666,7 +624,7 @@ graph TB
 
 ---
 
-## 📌 Conclusion
+##  Conclusion
 
 MediOrchestrator AI demonstrates that healthcare AI can be **specialized**, **accurate**, and **transparent**. By replacing monolithic chatbot architectures with a multi-agent orchestration system, we address the fundamental limitations of current healthcare AI solutions.
 

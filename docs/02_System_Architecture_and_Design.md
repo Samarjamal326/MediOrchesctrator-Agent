@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🏗 System Architecture & Design
+#  System Architecture & Design
 
 ## MediOrchestrator AI
 
@@ -29,15 +29,15 @@
 
 ---
 
-## 🔭 Complete Architecture Overview
+##  Complete Architecture Overview
 
 ### System Architecture
 
 ```mermaid
 graph TB
     subgraph "Client Layer"
-        Browser[🌐 Browser]
-        Mobile[📱 Mobile Web]
+        Browser[ Browser]
+        Mobile[ Mobile Web]
     end
 
     subgraph "Edge Layer"
@@ -68,7 +68,7 @@ graph TB
     end
 
     subgraph "AI Layer"
-        Orchestrator[🧠 AI Orchestrator]
+        Orchestrator[ AI Orchestrator]
         IntentSvc[Intent Classifier]
         AgentMgr[Agent Manager]
         RAGSvc[RAG Service]
@@ -154,7 +154,7 @@ graph TB
 
 ---
 
-## 🎨 Frontend Architecture
+##  Frontend Architecture
 
 ### Component Architecture
 
@@ -229,31 +229,11 @@ graph TB
 
 ### Frontend Data Flow
 
-```mermaid
-sequenceDiagram
-    actor User
-    participant UI as React Component
-    participant Store as Zustand Store
-    participant RQ as React Query
-    participant API as API Client
-    participant Backend as FastAPI
 
-    User->>UI: Types query
-    UI->>Store: Update input state
-    User->>UI: Clicks send
-    UI->>RQ: Trigger mutation
-    RQ->>API: POST /api/v1/query
-    API->>Backend: HTTP Request
-    Backend-->>API: JSON Response
-    API-->>RQ: Response data
-    RQ-->>Store: Update chat state
-    Store-->>UI: Re-render with response
-    UI-->>User: Display response
-```
 
 ---
 
-## ⚙️ Backend Architecture
+##  Backend Architecture
 
 ### Backend Service Architecture
 
@@ -350,69 +330,20 @@ graph LR
 
 ---
 
-## 🔐 Authentication & Authorization
+##  Authentication & Authorization
 
 ### Authentication Flow
 
-```mermaid
-sequenceDiagram
-    actor User
-    participant UI as Frontend
-    participant API as API Gateway
-    participant Auth as Auth Service
-    participant DB as PostgreSQL
-    participant Redis as Redis
 
-    Note over User,Redis: Registration Flow
-    User->>UI: Fill registration form
-    UI->>API: POST /auth/register
-    API->>Auth: Create user
-    Auth->>Auth: Hash password (bcrypt)
-    Auth->>DB: Store user record
-    DB-->>Auth: User created
-    Auth-->>API: Success
-    API-->>UI: Registration complete
-
-    Note over User,Redis: Login Flow
-    User->>UI: Enter credentials
-    UI->>API: POST /auth/login
-    API->>Auth: Validate credentials
-    Auth->>DB: Fetch user
-    DB-->>Auth: User record
-    Auth->>Auth: Verify password
-    Auth->>Auth: Generate JWT (access + refresh)
-    Auth->>Redis: Store refresh token
-    Auth-->>API: Tokens
-    API-->>UI: Set tokens
-    UI-->>User: Redirect to dashboard
-
-    Note over User,Redis: Authenticated Request
-    User->>UI: Make request
-    UI->>API: Request + Bearer token
-    API->>Auth: Validate JWT
-    Auth->>Auth: Decode + verify expiry
-    Auth-->>API: User context
-    API->>API: Process request
-    API-->>UI: Response
-
-    Note over User,Redis: Token Refresh
-    UI->>API: POST /auth/refresh
-    API->>Auth: Validate refresh token
-    Auth->>Redis: Check token validity
-    Redis-->>Auth: Valid
-    Auth->>Auth: Generate new access token
-    Auth-->>API: New access token
-    API-->>UI: Updated token
-```
 
 ### Authorization Model
 
 ```mermaid
 graph TB
     subgraph "Roles"
-        Admin[🔑 Admin]
-        User[👤 User]
-        Guest[👁 Guest]
+        Admin[ Admin]
+        User[ User]
+        Guest[ Guest]
     end
 
     subgraph "Permissions"
@@ -465,7 +396,7 @@ graph TB
 
 ---
 
-## 🗄 Database Architecture
+##  Database Architecture
 
 ### Database Schema Overview
 
@@ -716,7 +647,7 @@ erDiagram
 
 ---
 
-## 📦 Storage Architecture
+##  Storage Architecture
 
 ```mermaid
 graph TB
@@ -763,7 +694,7 @@ graph TB
 
 ---
 
-## 🔌 API Architecture
+##  API Architecture
 
 ### API Design Principles
 
@@ -781,61 +712,61 @@ graph TB
 
 | Method | Endpoint | Description | Auth |
 |---|---|---|---|
-| POST | `/api/v1/auth/register` | Register new user | ❌ |
-| POST | `/api/v1/auth/login` | Login, get tokens | ❌ |
-| POST | `/api/v1/auth/refresh` | Refresh access token | 🔄 Refresh |
-| POST | `/api/v1/auth/logout` | Invalidate tokens | ✅ |
-| GET | `/api/v1/auth/me` | Get current user | ✅ |
+| POST | `/api/v1/auth/register` | Register new user |  |
+| POST | `/api/v1/auth/login` | Login, get tokens |  |
+| POST | `/api/v1/auth/refresh` | Refresh access token |  Refresh |
+| POST | `/api/v1/auth/logout` | Invalidate tokens |  |
+| GET | `/api/v1/auth/me` | Get current user |  |
 
 #### Query & Chat
 
 | Method | Endpoint | Description | Auth |
 |---|---|---|---|
-| POST | `/api/v1/query` | Submit health query | ✅ |
-| POST | `/api/v1/query/stream` | Stream response (SSE) | ✅ |
-| GET | `/api/v1/query/{id}` | Get query result | ✅ |
+| POST | `/api/v1/query` | Submit health query |  |
+| POST | `/api/v1/query/stream` | Stream response (SSE) |  |
+| GET | `/api/v1/query/{id}` | Get query result |  |
 
 #### Conversations
 
 | Method | Endpoint | Description | Auth |
 |---|---|---|---|
-| GET | `/api/v1/conversations` | List conversations | ✅ |
-| GET | `/api/v1/conversations/{id}` | Get conversation | ✅ |
-| DELETE | `/api/v1/conversations/{id}` | Delete conversation | ✅ |
-| GET | `/api/v1/conversations/{id}/messages` | Get messages | ✅ |
+| GET | `/api/v1/conversations` | List conversations |  |
+| GET | `/api/v1/conversations/{id}` | Get conversation |  |
+| DELETE | `/api/v1/conversations/{id}` | Delete conversation |  |
+| GET | `/api/v1/conversations/{id}/messages` | Get messages |  |
 
 #### Reports
 
 | Method | Endpoint | Description | Auth |
 |---|---|---|---|
-| POST | `/api/v1/reports/upload` | Upload medical report | ✅ |
-| GET | `/api/v1/reports` | List user reports | ✅ |
-| GET | `/api/v1/reports/{id}/analysis` | Get analysis | ✅ |
+| POST | `/api/v1/reports/upload` | Upload medical report |  |
+| GET | `/api/v1/reports` | List user reports |  |
+| GET | `/api/v1/reports/{id}/analysis` | Get analysis |  |
 
 #### Agents
 
 | Method | Endpoint | Description | Auth |
 |---|---|---|---|
-| GET | `/api/v1/agents` | List all agents | ✅ |
-| GET | `/api/v1/agents/{id}` | Get agent details | ✅ |
-| GET | `/api/v1/agents/{id}/status` | Agent health status | ✅ Admin |
+| GET | `/api/v1/agents` | List all agents |  |
+| GET | `/api/v1/agents/{id}` | Get agent details |  |
+| GET | `/api/v1/agents/{id}/status` | Agent health status |  Admin |
 
 #### Admin
 
 | Method | Endpoint | Description | Auth |
 |---|---|---|---|
-| GET | `/api/v1/admin/users` | List users | ✅ Admin |
-| GET | `/api/v1/admin/analytics` | System analytics | ✅ Admin |
-| PUT | `/api/v1/admin/agents/{id}` | Update agent config | ✅ Admin |
-| GET | `/api/v1/admin/system/health` | System health check | ✅ Admin |
+| GET | `/api/v1/admin/users` | List users |  Admin |
+| GET | `/api/v1/admin/analytics` | System analytics |  Admin |
+| PUT | `/api/v1/admin/agents/{id}` | Update agent config |  Admin |
+| GET | `/api/v1/admin/system/health` | System health check |  Admin |
 
 #### System
 
 | Method | Endpoint | Description | Auth |
 |---|---|---|---|
-| GET | `/api/v1/health` | Health check | ❌ |
-| GET | `/api/v1/health/ready` | Readiness probe | ❌ |
-| GET | `/docs` | Swagger UI | ❌ |
+| GET | `/api/v1/health` | Health check |  |
+| GET | `/api/v1/health/ready` | Readiness probe |  |
+| GET | `/docs` | Swagger UI |  |
 
 ### Standard Response Format
 
@@ -888,7 +819,7 @@ graph TB
 
 ---
 
-## 📁 Folder Structure
+##  Folder Structure
 
 ### Backend Structure
 
@@ -1087,7 +1018,7 @@ frontend/
 
 ---
 
-## 🚀 Deployment Architecture
+##  Deployment Architecture
 
 ### Container Architecture
 
@@ -1155,7 +1086,7 @@ graph TB
 
 ---
 
-## 📈 Scalability
+##  Scalability
 
 ### Scaling Strategy
 
@@ -1194,7 +1125,7 @@ graph TB
 
 ---
 
-## 📊 Monitoring & Observability
+##  Monitoring & Observability
 
 ### Observability Stack
 
@@ -1247,7 +1178,7 @@ graph LR
 
 ---
 
-## ⚡ Caching Strategy
+##  Caching Strategy
 
 ### Cache Layers
 
@@ -1285,98 +1216,15 @@ graph LR
 
 ---
 
-## 🔀 Sequence Diagrams
+##  Sequence Diagrams
 
 ### Medical Report Upload & Analysis
 
-```mermaid
-sequenceDiagram
-    actor User
-    participant UI as Frontend
-    participant API as FastAPI
-    participant Store as MinIO
-    participant Proc as Document Processor
-    participant RAG as RAG Pipeline
-    participant Agent as Specialist Agent
-    participant LLM as LLM Provider
-    participant DB as PostgreSQL
 
-    User->>UI: Upload medical report (PDF)
-    UI->>API: POST /reports/upload (multipart)
-    API->>Store: Store file
-    Store-->>API: storage_path
-    API->>DB: Save report record (status: processing)
-    API-->>UI: Upload accepted (202)
-
-    API->>Proc: Process document (async)
-    Proc->>Proc: Extract text (OCR if needed)
-    Proc->>Proc: Classify report type
-    Proc->>RAG: Generate embeddings
-    RAG-->>Proc: Document vectors
-    
-    Proc->>Agent: Route to domain agent
-    Agent->>RAG: Retrieve relevant context
-    RAG-->>Agent: Domain knowledge
-    Agent->>LLM: Analyze report + context
-    LLM-->>Agent: Analysis result
-    
-    Agent->>DB: Save analysis
-    DB-->>Agent: Saved
-    Agent->>DB: Update report status: completed
-
-    UI->>API: GET /reports/{id}/analysis (polling)
-    API->>DB: Fetch analysis
-    DB-->>API: Analysis data
-    API-->>UI: Analysis response
-    UI-->>User: Display findings
-```
 
 ### Multi-Agent Query Flow
 
-```mermaid
-sequenceDiagram
-    actor User
-    participant Orch as Orchestrator
-    participant IC as Intent Classifier
-    participant Router as Agent Router
-    participant Agent1 as Primary Agent
-    participant Agent2 as Secondary Agent
-    participant RAG as RAG Pipeline
-    participant Val as Validator
-    participant Mem as Memory
 
-    User->>Orch: "I have chest pain and anxiety"
-    Orch->>Mem: Fetch conversation context
-    Mem-->>Orch: Previous context
-    
-    Orch->>IC: Classify intent
-    IC-->>Orch: [cardiology: 0.7, mental_health: 0.5]
-    
-    Note over Orch: Multi-domain query detected
-    
-    Orch->>Router: Route to multiple agents
-    
-    par Parallel Agent Execution
-        Router->>Agent1: Cardiology query
-        Agent1->>RAG: Retrieve cardiology KB
-        RAG-->>Agent1: Relevant docs
-        Agent1->>Agent1: Generate response
-    and
-        Router->>Agent2: Mental health query
-        Agent2->>RAG: Retrieve mental health KB
-        RAG-->>Agent2: Relevant docs
-        Agent2->>Agent2: Generate response
-    end
-
-    Agent1-->>Orch: Cardiology response
-    Agent2-->>Orch: Mental health response
-    
-    Orch->>Orch: Merge responses
-    Orch->>Val: Validate merged response
-    Val-->>Orch: ✅ Validated
-    Orch->>Mem: Update conversation memory
-    Orch-->>User: Combined response + sources
-```
 
 ---
 
