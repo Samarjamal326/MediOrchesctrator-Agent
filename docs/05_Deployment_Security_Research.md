@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🔒 Deployment, Security & Research
+#  Deployment, Security & Research
 
 ## MediOrchestrator AI
 
@@ -29,7 +29,7 @@
 
 ---
 
-## 🚀 Deployment Architecture
+##  Deployment Architecture
 
 ### Deployment Overview
 
@@ -176,7 +176,7 @@ server {
 
 ---
 
-## 🛡 Security Architecture
+##  Security Architecture
 
 ### Security Layers
 
@@ -246,46 +246,11 @@ graph TB
 
 ---
 
-## 🔑 JWT Implementation
+##  JWT Implementation
 
 ### JWT Flow
 
-```mermaid
-sequenceDiagram
-    actor User
-    participant App as Frontend
-    participant API as Backend
-    participant Redis as Redis
 
-    Note over User,Redis: Login
-    User->>App: Enter credentials
-    App->>API: POST /auth/login
-    API->>API: Verify password (bcrypt)
-    API->>API: Generate access token (1h)
-    API->>API: Generate refresh token (7d)
-    API->>Redis: Store refresh token
-    API-->>App: {access_token, refresh_token}
-    App->>App: Store access token in memory
-
-    Note over User,Redis: API Request
-    App->>API: GET /query (Authorization: Bearer <token>)
-    API->>API: Decode JWT
-    API->>API: Verify signature + expiry
-    API-->>App: Response
-
-    Note over User,Redis: Token Refresh
-    App->>API: POST /auth/refresh {refresh_token}
-    API->>Redis: Validate refresh token
-    Redis-->>API: Valid
-    API->>API: Generate new access token
-    API->>Redis: Rotate refresh token
-    API-->>App: {new_access_token, new_refresh_token}
-
-    Note over User,Redis: Logout
-    App->>API: POST /auth/logout
-    API->>Redis: Delete refresh token
-    API-->>App: Success
-```
 
 ### JWT Token Structure
 
@@ -314,77 +279,46 @@ sequenceDiagram
 
 ---
 
-## 🌐 OAuth 2.0
+##  OAuth 2.0
 
 ### OAuth 2.0 Flow (Google)
 
-```mermaid
-sequenceDiagram
-    actor User
-    participant App as Frontend
-    participant API as Backend
-    participant Google as Google OAuth
 
-    User->>App: Click "Sign in with Google"
-    App->>Google: Redirect to Google consent
-    Google->>User: Show consent screen
-    User->>Google: Approve
-    Google->>App: Redirect with auth code
-    App->>API: POST /auth/oauth/google {code}
-    API->>Google: Exchange code for tokens
-    Google-->>API: {access_token, id_token}
-    API->>Google: GET /userinfo
-    Google-->>API: {email, name, picture}
-    API->>API: Find or create user
-    API->>API: Generate JWT tokens
-    API-->>App: {access_token, refresh_token}
-```
 
 ### OAuth Provider Support
 
 | Provider | Status | Scopes |
 |---|---|---|
-| Google | ✅ Planned | `openid`, `email`, `profile` |
-| GitHub | 🔮 Future | `user:email` |
-| Microsoft | 🔮 Future | `openid`, `email`, `profile` |
+| Google |  Planned | `openid`, `email`, `profile` |
+| GitHub |  Future | `user:email` |
+| Microsoft |  Future | `openid`, `email`, `profile` |
 
 ---
 
-## 🔐 OWASP Compliance
+##  OWASP Compliance
 
 ### OWASP Top 10 Coverage
 
 | # | Risk | Status | Mitigation |
 |---|---|---|---|
-| A01 | **Broken Access Control** | ✅ | RBAC, JWT validation, route guards |
-| A02 | **Cryptographic Failures** | ✅ | SSL/TLS, bcrypt, secure token generation |
-| A03 | **Injection** | ✅ | Pydantic validation, SQLAlchemy ORM, parameterized queries |
-| A04 | **Insecure Design** | ✅ | Threat modeling, security-by-design architecture |
-| A05 | **Security Misconfiguration** | ✅ | Environment-based config, no defaults in production |
-| A06 | **Vulnerable Components** | ✅ | Trivy scanning, SBOM tracking, automated updates |
-| A07 | **Authentication Failures** | ✅ | JWT + refresh rotation, rate limiting on auth endpoints |
-| A08 | **Data Integrity Failures** | ✅ | Input validation, CI/CD integrity checks |
-| A09 | **Logging & Monitoring** | ✅ | Structured logging, Prometheus metrics, alert rules |
-| A10 | **Server-Side Request Forgery** | ✅ | URL allowlisting, network segmentation |
+| A01 | **Broken Access Control** |  | RBAC, JWT validation, route guards |
+| A02 | **Cryptographic Failures** |  | SSL/TLS, bcrypt, secure token generation |
+| A03 | **Injection** |  | Pydantic validation, SQLAlchemy ORM, parameterized queries |
+| A04 | **Insecure Design** |  | Threat modeling, security-by-design architecture |
+| A05 | **Security Misconfiguration** |  | Environment-based config, no defaults in production |
+| A06 | **Vulnerable Components** |  | Trivy scanning, SBOM tracking, automated updates |
+| A07 | **Authentication Failures** |  | JWT + refresh rotation, rate limiting on auth endpoints |
+| A08 | **Data Integrity Failures** |  | Input validation, CI/CD integrity checks |
+| A09 | **Logging & Monitoring** |  | Structured logging, Prometheus metrics, alert rules |
+| A10 | **Server-Side Request Forgery** |  | URL allowlisting, network segmentation |
 
 ### Security Headers
 
-```python
-# Middleware configuration
-SECURITY_HEADERS = {
-    "X-Content-Type-Options": "nosniff",
-    "X-Frame-Options": "DENY",
-    "X-XSS-Protection": "1; mode=block",
-    "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
-    "Content-Security-Policy": "default-src 'self'; script-src 'self'",
-    "Referrer-Policy": "strict-origin-when-cross-origin",
-    "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
-}
-```
+Security headers configured in the FastAPI middleware shield the application from web vulnerability vectors. Key headers include `X-Content-Type-Options: nosniff` to prevent MIME-type sniffing, `X-Frame-Options: DENY` to block clickjacking, strict transport security (HSTS) enforcing HTTPS, and custom Content Security Policies restricting executable script origins.
 
 ---
 
-## 🔍 Trivy Security Scanning
+##  Trivy Security Scanning
 
 ### Trivy Integration
 
@@ -392,9 +326,9 @@ SECURITY_HEADERS = {
 graph LR
     Build[Build Image] --> Scan[Trivy Scan]
     Scan --> Report{Vulnerabilities?}
-    Report -->|Critical/High| Block[Block Deployment ❌]
-    Report -->|Medium/Low| Warn[Warning ⚠️]
-    Report -->|None| Pass[Deploy ✅]
+    Report -->|Critical/High| Block[Block Deployment ]
+    Report -->|Medium/Low| Warn[Warning ]
+    Report -->|None| Pass[Deploy ]
     Warn --> Pass
 
     style Block fill:#E74C3C,stroke:#C0392B,color:#fff
@@ -432,44 +366,11 @@ trivy config ./backend/Dockerfile
 
 ### GitHub Actions Integration
 
-```yaml
-# .github/workflows/security.yml
-name: Security Scan
-
-on:
-  push:
-    branches: [main]
-  schedule:
-    - cron: '0 6 * * 1'  # Weekly Monday 6 AM
-
-jobs:
-  trivy-scan:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Build image
-        run: docker build -t mediorch-backend ./backend
-
-      - name: Trivy vulnerability scan
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: mediorch-backend
-          format: table
-          exit-code: 1
-          severity: CRITICAL,HIGH
-
-      - name: Trivy config scan
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: config
-          scan-ref: .
-          format: table
-```
+Security scanning pipelines defined in `.github/workflows/security.yml` trigger scans on every push to main and weekly cron runs. The workflow builds the backend Docker image and executes a Trivy container scan. High or critical severity findings return non-zero exit codes to block pipeline completion, while separate filesystem scans check configuration files for vulnerability patterns.
 
 ---
 
-## 📋 SBOM Generation
+##  SBOM Generation
 
 ### What is SBOM?
 
@@ -517,7 +418,7 @@ trivy sbom sbom.json
 
 ---
 
-## 📊 MLflow Integration
+##  MLflow Integration
 
 ### MLflow in MediOrchestrator
 
@@ -562,32 +463,11 @@ graph TB
 
 ### MLflow Code Integration
 
-```python
-import mlflow
-
-# Track RAG experiment
-with mlflow.start_run(experiment_id="rag_optimization"):
-    mlflow.log_params({
-        "embedding_model": "text-embedding-3-small",
-        "chunk_size": 1000,
-        "overlap": 200,
-        "top_k": 5,
-        "llm_model": "gpt-4",
-    })
-    
-    mlflow.log_metrics({
-        "faithfulness": 0.94,
-        "answer_relevance": 0.88,
-        "context_precision": 0.82,
-        "context_recall": 0.87,
-        "latency_ms": 2340,
-        "cost_per_query": 0.035,
-    })
-```
+MLflow experiment tracking records parameters and metrics inside structured run blocks. The system uses context managers (e.g. `mlflow.start_run`) to log parameters like embedding model selections, chunk parameters, or retrieval settings, alongside performance metrics such as faithfulness ratings, relevance scores, latencies, and token costs.
 
 ---
 
-## 🔭 LangFuse Observability
+##  LangFuse Observability
 
 ### LangFuse Architecture
 
@@ -628,42 +508,7 @@ graph TB
 
 ### LangFuse Code Integration
 
-```python
-from langfuse import Langfuse
-from langfuse.decorators import observe
-
-langfuse = Langfuse()
-
-@observe()
-async def process_query(query: str, user_id: str):
-    """Traced query processing."""
-    
-    # This creates a trace automatically
-    intent = await classify_intent(query)
-    agent = await select_agent(intent.domain)
-    response = await agent.process(query)
-    
-    # Log quality score
-    langfuse.score(
-        name="response_quality",
-        value=response.confidence,
-        comment=f"Agent: {agent.name}, Domain: {intent.domain}",
-    )
-    
-    return response
-
-@observe()
-async def classify_intent(query: str):
-    """Traced intent classification."""
-    # LangFuse tracks this as a span within the parent trace
-    ...
-
-@observe(as_type="generation")
-async def generate_response(prompt: str, model: str):
-    """Traced LLM generation."""
-    # LangFuse tracks tokens, cost, latency automatically
-    ...
-```
+LangFuse integration maps complete execution routes via standard Python decorators. Decorating query workflows with `@observe()` automatically creates traces and spans tracking sub-steps, while specific `@observe(as_type="generation")` decorators on generation functions capture model properties, token counts, processing latency, and cost metadata, transmitting the information to the LangFuse dashboard.
 
 ### LangFuse Dashboard Views
 
@@ -678,7 +523,7 @@ async def generate_response(prompt: str, model: str):
 
 ---
 
-## 📈 Monitoring & Logging
+##  Monitoring & Logging
 
 ### Monitoring Stack
 
@@ -735,60 +580,11 @@ graph TB
 
 ### Prometheus Metrics Implementation
 
-```python
-from prometheus_client import Counter, Histogram, Gauge
-from prometheus_fastapi_instrumentator import Instrumentator
-
-# Custom metrics
-QUERY_COUNT = Counter(
-    "mediorch_queries_total",
-    "Total queries processed",
-    ["agent", "domain", "status"]
-)
-
-QUERY_LATENCY = Histogram(
-    "mediorch_query_duration_seconds",
-    "Query processing time",
-    ["agent"],
-    buckets=[0.1, 0.5, 1, 2, 3, 5, 10]
-)
-
-ACTIVE_AGENTS = Gauge(
-    "mediorch_active_agents",
-    "Number of active agents"
-)
-
-LLM_TOKENS = Counter(
-    "mediorch_llm_tokens_total",
-    "Total LLM tokens used",
-    ["model", "type"]  # type: input/output
-)
-
-# Auto-instrument FastAPI
-Instrumentator().instrument(app).expose(app)
-```
+Prometheus metrics are exposed via instrumentation endpoints. The app defines custom counters to track query counts and token usages, gauges to monitor active domain agent counts, and histograms to track latency distributions across routes. The FastAPI app is auto-instrumented to automatically expose these metrics at the `/metrics` path.
 
 ### Structured Logging
 
-```python
-import structlog
-
-logger = structlog.get_logger()
-
-# Structured log example
-logger.info(
-    "query_processed",
-    user_id="uuid-123",
-    query_id="query-456",
-    agent="cardiology_agent",
-    domain="cardiology",
-    confidence=0.92,
-    latency_ms=2340,
-    tokens_used=847,
-    model="gpt-4",
-    sources_count=3,
-)
-```
+Structured logging uses the `structlog` library to generate machine-readable log outputs. By specifying arguments in key-value pairs (such as `user_id`, `latency_ms`, and `tokens_used`), the application formats logs into clean JSON payloads, which are collected by log storage backends for parsing and dashboard rendering.
 
 ### Log Format
 
@@ -822,7 +618,7 @@ logger.info(
 
 ---
 
-## 🔬 Research Opportunities
+##  Research Opportunities
 
 ### Research Areas Map
 
@@ -903,7 +699,7 @@ graph LR
 
 ---
 
-## 🔮 Future Enhancements
+##  Future Enhancements
 
 ### Enhancement Roadmap
 
@@ -956,7 +752,7 @@ graph TB
 
 ---
 
-## 📖 References
+##  References
 
 ### Core Technologies
 
@@ -1007,7 +803,7 @@ graph TB
 
 ---
 
-## 📝 Glossary
+##  Glossary
 
 | Term | Definition |
 |---|---|

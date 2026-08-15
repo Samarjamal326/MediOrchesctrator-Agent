@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🏥 MediOrchestrator AI
+#  MediOrchestrator AI
 
 ### Agentic Multi-LLM Healthcare Intelligence Platform
 
@@ -21,7 +21,7 @@
 
 ---
 
-## 🎯 What Makes This Different
+##  What Makes This Different
 
 | Traditional Health Chatbot | MediOrchestrator AI |
 |---|---|
@@ -34,13 +34,13 @@
 
 ---
 
-## 🏗 Architecture
+##  Architecture
 
 ```mermaid
 graph TB
-    User([🧑 User]) --> Gateway[API Gateway]
+    User([ User]) --> Gateway[API Gateway]
     Gateway --> Auth[Authentication]
-    Auth --> Orchestrator[🧠 AI Orchestrator]
+    Auth --> Orchestrator[ AI Orchestrator]
     
     Orchestrator --> IC[Intent Classifier]
     IC --> AR[Agent Router]
@@ -73,7 +73,7 @@ graph TB
 
 ---
 
-## 📚 Documentation
+##  Documentation
 
 | # | Document | Description |
 |---|---|---|
@@ -83,11 +83,11 @@ graph TB
 | 4 | [Development & Implementation](docs/04_Development_and_Implementation.md) | Folder structures, coding standards, CI/CD, testing |
 | 5 | [Deployment, Security & Research](docs/05_Deployment_Security_Research.md) | Deployment, security, monitoring, research opportunities |
 
-> 📄 PDF versions available in the [`pdf/`](pdf/) directory.
+>  PDF versions available in the [`pdf/`](pdf/) directory.
 
 ---
 
-## 🔧 Technology Stack
+##  Technology Stack
 
 ```mermaid
 graph LR
@@ -151,7 +151,7 @@ graph LR
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 
@@ -180,26 +180,26 @@ cd frontend && npm install && npm run dev
 
 ---
 
-## 🧠 Healthcare Domains
+##  Healthcare Domains
 
 | Domain | Agent | Knowledge Base |
 |---|---|---|
-| 🩺 General Medicine | `general_medicine_agent` | Clinical guidelines, symptoms, diagnostics |
-| 🥗 Nutrition | `nutrition_agent` | Dietary plans, nutritional science |
-| 🦷 Dentistry | `dentistry_agent` | Oral health, dental procedures |
-| 🧴 Dermatology | `dermatology_agent` | Skin conditions, treatments |
-| ❤️ Cardiology | `cardiology_agent` | Heart health, cardiovascular data |
-| 🦴 Orthopedics | `orthopedics_agent` | Bone/joint conditions, rehabilitation |
-| 🧠 Neurology | `neurology_agent` | Neurological conditions, brain health |
-| 🔬 Pathology | `pathology_agent` | Lab results, diagnostic testing |
-| 💚 Mental Health | `mental_health_agent` | Psychology, therapy approaches |
-| 🚑 Emergency Medicine | `emergency_agent` | Triage, emergency protocols |
-| 🩷 Women's Health | `womens_health_agent` | Gynecology, reproductive health |
-| 💊 Pharmacy | `pharmacy_agent` | Drug interactions, medications |
+|  General Medicine | `general_medicine_agent` | Clinical guidelines, symptoms, diagnostics |
+|  Nutrition | `nutrition_agent` | Dietary plans, nutritional science |
+|  Dentistry | `dentistry_agent` | Oral health, dental procedures |
+|  Dermatology | `dermatology_agent` | Skin conditions, treatments |
+|  Cardiology | `cardiology_agent` | Heart health, cardiovascular data |
+|  Orthopedics | `orthopedics_agent` | Bone/joint conditions, rehabilitation |
+|  Neurology | `neurology_agent` | Neurological conditions, brain health |
+|  Pathology | `pathology_agent` | Lab results, diagnostic testing |
+|  Mental Health | `mental_health_agent` | Psychology, therapy approaches |
+|  Emergency Medicine | `emergency_agent` | Triage, emergency protocols |
+|  Women's Health | `womens_health_agent` | Gynecology, reproductive health |
+|  Pharmacy | `pharmacy_agent` | Drug interactions, medications |
 
 ---
 
-## 📂 Repository Structure
+##  Repository Structure
 
 ```
 MediOrchesctrator-Agent/
@@ -238,7 +238,7 @@ MediOrchesctrator-Agent/
 
 ---
 
-## 👥 Team
+##  Team
 
 | Role | Responsibility |
 |---|---|
@@ -249,7 +249,7 @@ MediOrchesctrator-Agent/
 
 ---
 
-## 📄 License
+##  License
 
 This project is licensed under the MIT License.
 
@@ -257,7 +257,7 @@ This project is licensed under the MIT License.
 
 <div align="center">
 
-**Built with ❤️ for healthcare innovation**
+**Built with  for healthcare innovation**
 
 *MediOrchestrator AI — Where AI Agents Meet Healthcare Intelligence*
 

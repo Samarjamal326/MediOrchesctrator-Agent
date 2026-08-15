@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🛠 Development & Implementation
+#  Development & Implementation
 
 ## MediOrchestrator AI
 
@@ -25,45 +25,45 @@
 
 ---
 
-## 📁 Folder Structures
+##  Folder Structures
 
 ### Complete Project Structure
 
 ```
 MediOrchesctrator-Agent/
 │
-├── 📄 README.md
-├── 📄 docker-compose.yml
-├── 📄 docker-compose.dev.yml
-├── 📄 .env.example
-├── 📄 .gitignore
-├── 📄 Makefile
+├──  README.md
+├──  docker-compose.yml
+├──  docker-compose.dev.yml
+├──  .env.example
+├──  .gitignore
+├──  Makefile
 │
-├── 📁 docs/
+├──  docs/
 │   ├── 01_Project_Foundation.md
 │   ├── 02_System_Architecture_and_Design.md
 │   ├── 03_AI_and_Agent_Architecture.md
 │   ├── 04_Development_and_Implementation.md
 │   └── 05_Deployment_Security_Research.md
 │
-├── 📁 pdf/
+├──  pdf/
 │   └── [PDF versions]
 │
-├── 📁 backend/
-│   ├── 📄 Dockerfile
-│   ├── 📄 requirements.txt
-│   ├── 📄 alembic.ini
-│   ├── 📄 pyproject.toml
+├──  backend/
+│   ├──  Dockerfile
+│   ├──  requirements.txt
+│   ├──  alembic.ini
+│   ├──  pyproject.toml
 │   │
-│   ├── 📁 app/
+│   ├──  app/
 │   │   ├── __init__.py
 │   │   ├── main.py
 │   │   ├── config.py
 │   │   │
-│   │   ├── 📁 api/
+│   │   ├──  api/
 │   │   │   ├── __init__.py
 │   │   │   ├── deps.py
-│   │   │   └── 📁 v1/
+│   │   │   └──  v1/
 │   │   │       ├── __init__.py
 │   │   │       ├── auth.py
 │   │   │       ├── query.py
@@ -73,14 +73,14 @@ MediOrchesctrator-Agent/
 │   │   │       ├── admin.py
 │   │   │       └── health.py
 │   │   │
-│   │   ├── 📁 core/
+│   │   ├──  core/
 │   │   │   ├── __init__.py
 │   │   │   ├── security.py
 │   │   │   ├── database.py
 │   │   │   ├── redis.py
 │   │   │   └── exceptions.py
 │   │   │
-│   │   ├── 📁 models/
+│   │   ├──  models/
 │   │   │   ├── __init__.py
 │   │   │   ├── user.py
 │   │   │   ├── conversation.py
@@ -90,7 +90,7 @@ MediOrchesctrator-Agent/
 │   │   │   ├── document.py
 │   │   │   └── report.py
 │   │   │
-│   │   ├── 📁 schemas/
+│   │   ├──  schemas/
 │   │   │   ├── __init__.py
 │   │   │   ├── user.py
 │   │   │   ├── query.py
@@ -98,7 +98,7 @@ MediOrchesctrator-Agent/
 │   │   │   ├── agent.py
 │   │   │   └── report.py
 │   │   │
-│   │   ├── 📁 services/
+│   │   ├──  services/
 │   │   │   ├── __init__.py
 │   │   │   ├── auth_service.py
 │   │   │   ├── user_service.py
@@ -107,7 +107,7 @@ MediOrchesctrator-Agent/
 │   │   │   ├── report_service.py
 │   │   │   └── admin_service.py
 │   │   │
-│   │   ├── 📁 agents/
+│   │   ├──  agents/
 │   │   │   ├── __init__.py
 │   │   │   ├── orchestrator.py
 │   │   │   ├── intent_classifier.py
@@ -115,7 +115,7 @@ MediOrchesctrator-Agent/
 │   │   │   ├── agent_manager.py
 │   │   │   ├── base_agent.py
 │   │   │   ├── response_validator.py
-│   │   │   └── 📁 domains/
+│   │   │   └──  domains/
 │   │   │       ├── __init__.py
 │   │   │       ├── general_medicine.py
 │   │   │       ├── nutrition.py
@@ -130,7 +130,7 @@ MediOrchesctrator-Agent/
 │   │   │       ├── womens_health.py
 │   │   │       └── pharmacy.py
 │   │   │
-│   │   ├── 📁 rag/
+│   │   ├──  rag/
 │   │   │   ├── __init__.py
 │   │   │   ├── pipeline.py
 │   │   │   ├── retriever.py
@@ -139,24 +139,24 @@ MediOrchesctrator-Agent/
 │   │   │   ├── reranker.py
 │   │   │   └── vector_store.py
 │   │   │
-│   │   ├── 📁 knowledge/
+│   │   ├──  knowledge/
 │   │   │   ├── __init__.py
 │   │   │   ├── loader.py
 │   │   │   ├── processor.py
-│   │   │   └── 📁 datasets/
+│   │   │   └──  datasets/
 │   │   │       └── [domain folders]
 │   │   │
-│   │   └── 📁 memory/
+│   │   └──  memory/
 │   │       ├── __init__.py
 │   │       ├── conversation_memory.py
 │   │       ├── summary_memory.py
 │   │       └── buffer_memory.py
 │   │
-│   ├── 📁 alembic/
+│   ├──  alembic/
 │   │   ├── env.py
-│   │   └── 📁 versions/
+│   │   └──  versions/
 │   │
-│   └── 📁 tests/
+│   └──  tests/
 │       ├── conftest.py
 │       ├── test_auth.py
 │       ├── test_query.py
@@ -164,55 +164,55 @@ MediOrchesctrator-Agent/
 │       ├── test_rag.py
 │       └── test_integration.py
 │
-├── 📁 frontend/
-│   ├── 📄 Dockerfile
-│   ├── 📄 package.json
-│   ├── 📄 vite.config.ts
-│   ├── 📄 tsconfig.json
-│   ├── 📄 tailwind.config.js
+├──  frontend/
+│   ├──  Dockerfile
+│   ├──  package.json
+│   ├──  vite.config.ts
+│   ├──  tsconfig.json
+│   ├──  tailwind.config.js
 │   │
-│   ├── 📁 public/
+│   ├──  public/
 │   │   └── index.html
 │   │
-│   └── 📁 src/
+│   └──  src/
 │       ├── main.tsx
 │       ├── App.tsx
 │       ├── index.css
 │       │
-│       ├── 📁 components/
-│       │   ├── 📁 chat/
-│       │   ├── 📁 layout/
-│       │   ├── 📁 agents/
-│       │   ├── 📁 reports/
-│       │   └── 📁 common/
+│       ├──  components/
+│       │   ├──  chat/
+│       │   ├──  layout/
+│       │   ├──  agents/
+│       │   ├──  reports/
+│       │   └──  common/
 │       │
-│       ├── 📁 pages/
-│       ├── 📁 services/
-│       ├── 📁 store/
-│       ├── 📁 hooks/
-│       ├── 📁 types/
-│       └── 📁 utils/
+│       ├──  pages/
+│       ├──  services/
+│       ├──  store/
+│       ├──  hooks/
+│       ├──  types/
+│       └──  utils/
 │
-├── 📁 infrastructure/
-│   ├── 📁 nginx/
+├──  infrastructure/
+│   ├──  nginx/
 │   │   └── nginx.conf
-│   ├── 📁 prometheus/
+│   ├──  prometheus/
 │   │   └── prometheus.yml
-│   ├── 📁 grafana/
+│   ├──  grafana/
 │   │   └── dashboards/
-│   └── 📁 scripts/
+│   └──  scripts/
 │       ├── init-db.sh
 │       ├── seed-data.sh
 │       └── load-knowledge.sh
 │
-├── 📁 .github/
-│   └── 📁 workflows/
+├──  .github/
+│   └──  workflows/
 │       ├── ci.yml
 │       ├── cd.yml
 │       └── security.yml
 │
-├── 📁 diagrams/
-└── 📁 assets/
+├──  diagrams/
+└──  assets/
 ```
 
 ### Layer Responsibility Map
@@ -262,7 +262,7 @@ graph TB
 
 ---
 
-## 🔌 API Design & Implementation
+##  API Design & Implementation
 
 ### API Entry Point — `main.py`
 
@@ -315,66 +315,15 @@ app.include_router(admin.router, prefix="/api/v1/admin", tags=["Admin"])
 
 ### Query Endpoint Implementation
 
-```python
-# app/api/v1/query.py
-from fastapi import APIRouter, Depends, HTTPException
-from app.schemas.query import QueryRequest, QueryResponse
-from app.services.query_service import QueryService
-from app.api.deps import get_current_user, get_query_service
-
-router = APIRouter()
-
-@router.post("/", response_model=QueryResponse)
-async def submit_query(
-    request: QueryRequest,
-    current_user = Depends(get_current_user),
-    query_service: QueryService = Depends(get_query_service),
-):
-    """Submit a health query to the AI orchestrator."""
-    result = await query_service.process_query(
-        query=request.query,
-        user_id=current_user.id,
-        conversation_id=request.conversation_id,
-    )
-    return result
-```
+The query endpoint is defined in `app/api/v1/query.py`. It exposes a single POST route `/` that receives a `QueryRequest` payload containing the query text and conversation context. The route validates the client's JWT token via the `get_current_user` dependency, instantiates a `QueryService` instance, and processes the request asynchronously before returning a structured `QueryResponse`.
 
 ### Pydantic Schemas
 
-```python
-# app/schemas/query.py
-from pydantic import BaseModel, Field
-from typing import Optional, List
-from uuid import UUID
-from datetime import datetime
-
-class QueryRequest(BaseModel):
-    query: str = Field(..., min_length=1, max_length=5000)
-    conversation_id: Optional[UUID] = None
-    preferred_model: Optional[str] = None
-
-class SourceInfo(BaseModel):
-    title: str
-    content: str
-    relevance_score: float
-    source_url: Optional[str] = None
-
-class QueryResponse(BaseModel):
-    success: bool = True
-    data: QueryData
-
-class QueryData(BaseModel):
-    response: str
-    agent: str
-    domain: str
-    confidence: float = Field(..., ge=0.0, le=1.0)
-    sources: List[SourceInfo]
-    model_used: str
-    tokens_used: int
-    latency_ms: int
-    conversation_id: UUID
-    message_id: UUID
-```
+Pydantic schemas defined in `app/schemas/query.py` handle strict type validation, request parameters, and outbound serialization:
+- **`QueryRequest`**: Enforces a non-empty query string up to 5,000 characters, alongside optional identifiers for the conversation session and preferred LLM model.
+- **`SourceInfo`**: Validates retrieved reference details (title, text chunk, relevance score, and source URL).
+- **`QueryData`**: Maps AI Orchestrator metrics (response text, active domain agent name, confidence rating, metadata, and token count).
+- **`QueryResponse`**: Encapsulates successful responses using a standardized envelope schema.
 
 ### Dependency Injection Pattern
 
@@ -393,254 +342,48 @@ graph LR
     style Route fill:#009688,stroke:#00796B,color:#fff
 ```
 
-```python
-# app/api/deps.py
-from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from app.core.database import get_session
-from app.core.security import decode_jwt
-from app.services.query_service import QueryService
-from app.agents.orchestrator import Orchestrator
-
-security = HTTPBearer()
-
-async def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
-    db: AsyncSession = Depends(get_session),
-):
-    """Extract and validate user from JWT token."""
-    payload = decode_jwt(credentials.credentials)
-    if not payload:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid or expired token",
-        )
-    user = await db.get(User, payload["sub"])
-    if not user or not user.is_active:
-        raise HTTPException(status_code=404, detail="User not found")
-    return user
-
-async def get_query_service(
-    db: AsyncSession = Depends(get_session),
-) -> QueryService:
-    """Provide QueryService instance."""
-    orchestrator = Orchestrator()
-    return QueryService(db=db, orchestrator=orchestrator)
-```
+Dependency injection functions in `app/api/deps.py` decouple route definitions from database and service initialization:
+- **`get_current_user`**: Reads credentials using standard HTTP Bearer token headers, validates the token via JWT utilities, and queries PostgreSQL to yield active user records.
+- **`get_query_service`**: Resolves database sessions and links them to instances of the core `Orchestrator` system, returning instantiated services ready for processing queries.
 
 ---
 
-## 🔐 Authentication Implementation
+##  Authentication Implementation
 
 ### Security Module
 
-```python
-# app/core/security.py
-from datetime import datetime, timedelta
-from jose import JWTError, jwt
-from passlib.context import CryptContext
-from app.config import settings
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-def hash_password(password: str) -> str:
-    return pwd_context.hash(password)
-
-def verify_password(plain: str, hashed: str) -> bool:
-    return pwd_context.verify(plain, hashed)
-
-def create_access_token(data: dict) -> str:
-    to_encode = data.copy()
-    expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE)
-    to_encode.update({"exp": expire, "type": "access"})
-    return jwt.encode(to_encode, settings.JWT_SECRET, algorithm="HS256")
-
-def create_refresh_token(data: dict) -> str:
-    to_encode = data.copy()
-    expire = datetime.utcnow() + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
-    to_encode.update({"exp": expire, "type": "refresh"})
-    return jwt.encode(to_encode, settings.JWT_REFRESH_SECRET, algorithm="HS256")
-
-def decode_jwt(token: str) -> dict | None:
-    try:
-        return jwt.decode(token, settings.JWT_SECRET, algorithms=["HS256"])
-    except JWTError:
-        return None
-```
+The core cryptographic and token functions reside in `app/core/security.py`:
+- **Password Hashing**: Uses `passlib` with `bcrypt` (12 rounds) to safely encrypt plain credentials via `hash_password` and verify login attempts with `verify_password`.
+- **JWT Utilities**: Handles generation of short-lived access tokens (via `create_access_token`) and long-lived refresh tokens (via `create_refresh_token`). Signature verification and payload parsing are executed within `decode_jwt` using HMAC-SHA256 signing.
 
 ### Auth Endpoints
 
-```python
-# app/api/v1/auth.py
-from fastapi import APIRouter, Depends, HTTPException, status
-from app.schemas.user import UserCreate, UserLogin, TokenResponse
-from app.services.auth_service import AuthService
-
-router = APIRouter()
-
-@router.post("/register", response_model=TokenResponse, status_code=201)
-async def register(
-    user_data: UserCreate,
-    auth_service: AuthService = Depends(),
-):
-    """Register a new user."""
-    user = await auth_service.register(user_data)
-    tokens = auth_service.generate_tokens(user)
-    return tokens
-
-@router.post("/login", response_model=TokenResponse)
-async def login(
-    credentials: UserLogin,
-    auth_service: AuthService = Depends(),
-):
-    """Authenticate user and return tokens."""
-    user = await auth_service.authenticate(
-        credentials.email, credentials.password
-    )
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid credentials",
-        )
-    tokens = auth_service.generate_tokens(user)
-    return tokens
-
-@router.post("/refresh", response_model=TokenResponse)
-async def refresh_token(
-    refresh_token: str,
-    auth_service: AuthService = Depends(),
-):
-    """Refresh access token."""
-    tokens = await auth_service.refresh(refresh_token)
-    return tokens
-```
+The authentication router defined in `app/api/v1/auth.py` coordinates credential management and access token distribution:
+- **`/register`**: Validates new user registration requests, invokes the core auth service to save credentials, and issues an initial JWT token pair.
+- **`/login`**: Validates login credentials against stored hashes, raising unauthorized exceptions on mismatch, and generates standard active tokens.
+- **`/refresh`**: Accepts a valid refresh token payload, validates it against session cache records, and returns newly rotated token structures.
 
 ---
 
-## 🗄 Database Implementation
+##  Database Implementation
 
 ### SQLAlchemy Models
 
-```python
-# app/models/user.py
-from sqlalchemy import Column, String, Boolean, DateTime
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship
-from sqlalchemy.sql import func
-import uuid
+The database user schema is modeled in `app/models/user.py`. It inherits from the declarative base and defines columns for unique UUID primary keys, indexed email strings, password hashes, user roles, active account flags, and audit timestamps. Additionally, it configures relative ORM relationships linking users to their conversations and uploaded medical reports.
 
-from app.core.database import Base
-
-class User(Base):
-    __tablename__ = "users"
-
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    email = Column(String(255), unique=True, nullable=False, index=True)
-    password_hash = Column(String(255), nullable=False)
-    full_name = Column(String(100), nullable=False)
-    role = Column(String(20), nullable=False, default="user")
-    is_active = Column(Boolean, default=True)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
-
-    # Relationships
-    conversations = relationship("Conversation", back_populates="user")
-    reports = relationship("MedicalReport", back_populates="user")
-```
-
-```python
-# app/models/message.py
-class Message(Base):
-    __tablename__ = "messages"
-
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    conversation_id = Column(UUID(as_uuid=True), ForeignKey("conversations.id"))
-    agent_id = Column(UUID(as_uuid=True), ForeignKey("agents.id"), nullable=True)
-    role = Column(String(20), nullable=False)  # user, assistant, system
-    content = Column(Text, nullable=False)
-    confidence_score = Column(Float, nullable=True)
-    model_used = Column(String(50), nullable=True)
-    token_count = Column(Integer, nullable=True)
-    metadata = Column(JSONB, nullable=True)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-
-    # Relationships
-    conversation = relationship("Conversation", back_populates="messages")
-    agent = relationship("Agent")
-    sources = relationship("MessageSource", back_populates="message")
-```
+The conversation message model is configured in `app/models/message.py`. It maps each chat interaction to a specific database record containing foreign key relations to its parent conversation and the responding agent. The schema tracks message roles (user vs. assistant), plain text content, confidence score metrics, source document details, and audit metadata.
 
 ### Database Connection
 
-```python
-# app/core/database.py
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlalchemy.orm import sessionmaker, declarative_base
-from app.config import settings
-
-engine = create_async_engine(
-    settings.DATABASE_URL,
-    echo=settings.DEBUG,
-    pool_size=20,
-    max_overflow=10,
-    pool_pre_ping=True,
-)
-
-async_session = sessionmaker(
-    engine, class_=AsyncSession, expire_on_commit=False
-)
-
-Base = declarative_base()
-
-async def get_session():
-    async with async_session() as session:
-        try:
-            yield session
-            await session.commit()
-        except Exception:
-            await session.rollback()
-            raise
-        finally:
-            await session.close()
-
-async def init_db():
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-```
+Asynchronous database connectivity is configured in `app/core/database.py`. It creates an `AsyncEngine` instance configured with connection pooling parameters, initializes the declarative base class, and exposes a `get_session` generator function that manages database transactions by yielding sessions and committing or rolling them back automatically on error.
 
 ### Migration Example
 
-```python
-# alembic/versions/001_initial.py
-"""Initial migration"""
-
-from alembic import op
-import sqlalchemy as sa
-from sqlalchemy.dialects.postgresql import UUID, JSONB
-
-def upgrade():
-    op.create_table(
-        "users",
-        sa.Column("id", UUID(as_uuid=True), primary_key=True),
-        sa.Column("email", sa.String(255), unique=True, nullable=False),
-        sa.Column("password_hash", sa.String(255), nullable=False),
-        sa.Column("full_name", sa.String(100), nullable=False),
-        sa.Column("role", sa.String(20), nullable=False, server_default="user"),
-        sa.Column("is_active", sa.Boolean(), server_default="true"),
-        sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.func.now()),
-        sa.Column("updated_at", sa.DateTime(timezone=True)),
-    )
-    op.create_index("idx_users_email", "users", ["email"], unique=True)
-
-def downgrade():
-    op.drop_table("users")
-```
+Alembic migration scripts handle database version control. The initial script creates the tables (e.g. `users`) with default columns, primary key definitions, constraints, and indexes during `upgrade()`, and drops the tables during `downgrade()` in case a rollback is requested.
 
 ---
 
-## 📏 Coding Standards
+##  Coding Standards
 
 ### Python Coding Standards
 
@@ -769,7 +512,7 @@ LANGFUSE_SECRET_KEY=sk-...
 
 ---
 
-## 🐳 Docker Configuration
+##  Docker Configuration
 
 ### Docker Compose
 
@@ -959,7 +702,7 @@ graph TB
 
 ---
 
-## 🔄 CI/CD Pipeline
+##  CI/CD Pipeline
 
 ### Pipeline Architecture
 
@@ -1091,7 +834,7 @@ jobs:
 
 ---
 
-## 🧪 Testing Strategy
+##  Testing Strategy
 
 ### Testing Pyramid
 
@@ -1177,7 +920,7 @@ async def test_agent_routing():
 
 ---
 
-## 🔄 Implementation Workflow
+##  Implementation Workflow
 
 ### Development Phases
 
@@ -1227,7 +970,7 @@ graph TB
 
 ---
 
-## 🔗 System Integration
+##  System Integration
 
 ### Integration Points
 

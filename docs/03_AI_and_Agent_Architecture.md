@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🧠 AI & Agent Architecture
+#  AI & Agent Architecture
 
 ## MediOrchestrator AI
 
@@ -30,7 +30,7 @@
 
 ---
 
-## 🤖 Agentic AI Overview
+##  Agentic AI Overview
 
 ### What is Agentic AI?
 
@@ -76,7 +76,7 @@ graph LR
 ```mermaid
 graph TB
     subgraph "Decision Layer"
-        Orch[🧠 Orchestrator]
+        Orch[ Orchestrator]
         IC[Intent Classifier]
         Router[Agent Router]
     end
@@ -118,7 +118,7 @@ graph TB
 
 ---
 
-## 🧠 AI Orchestrator
+##  AI Orchestrator
 
 The Orchestrator is the central intelligence that manages the entire query lifecycle.
 
@@ -126,7 +126,7 @@ The Orchestrator is the central intelligence that manages the entire query lifec
 
 ```mermaid
 graph TB
-    Orch[🧠 AI Orchestrator]
+    Orch[ AI Orchestrator]
     
     Orch --> R1[Receive Query]
     Orch --> R2[Load Context]
@@ -187,19 +187,19 @@ flowchart TD
 
 ---
 
-## 🔗 LangGraph Workflow
+##  LangGraph Workflow
 
 ### Why LangGraph?
 
 | Feature | LangGraph | Plain LangChain | Custom Code |
 |---|---|---|---|
-| State machines | ✅ Built-in | ❌ | ⚠️ Complex |
-| Conditional routing | ✅ Native | ⚠️ Limited | ⚠️ Complex |
-| Parallel execution | ✅ Native | ❌ | ⚠️ Complex |
-| Human-in-the-loop | ✅ Built-in | ❌ | ⚠️ Complex |
-| Checkpointing | ✅ Built-in | ❌ | ❌ |
-| Streaming | ✅ Native | ✅ | ⚠️ Complex |
-| Visualization | ✅ Built-in | ❌ | ❌ |
+| State machines |  Built-in |  |  Complex |
+| Conditional routing |  Native |  Limited |  Complex |
+| Parallel execution |  Native |  |  Complex |
+| Human-in-the-loop |  Built-in |  |  Complex |
+| Checkpointing |  Built-in |  |  |
+| Streaming |  Native |  |  Complex |
+| Visualization |  Built-in |  |  |
 
 ### LangGraph Agent Workflow
 
@@ -300,7 +300,7 @@ graph LR
 
 ---
 
-## ⛓ LangChain Integration
+##  LangChain Integration
 
 ### LangChain Components Used
 
@@ -356,7 +356,7 @@ graph TB
 
 ---
 
-## 🔄 Agent-to-Agent Communication
+##  Agent-to-Agent Communication
 
 ### Communication Patterns
 
@@ -411,42 +411,11 @@ class AgentMessage:
 
 ### Agent Collaboration Sequence
 
-```mermaid
-sequenceDiagram
-    participant Orch as Orchestrator
-    participant Card as Cardiology Agent
-    participant MH as Mental Health Agent
-    participant RAG as RAG Pipeline
-    participant Val as Validator
 
-    Note over Orch: Query: "Chest pain with anxiety attacks"
-    
-    Orch->>Orch: Classify → [cardiology: 0.7, mental_health: 0.6]
-    
-    par Parallel Execution
-        Orch->>Card: Process cardiology aspect
-        Card->>RAG: Retrieve cardiology knowledge
-        RAG-->>Card: Relevant documents
-        Card->>Card: Generate cardiology response
-    and
-        Orch->>MH: Process mental health aspect
-        MH->>RAG: Retrieve mental health knowledge
-        RAG-->>MH: Relevant documents
-        MH->>MH: Generate mental health response
-    end
-
-    Card-->>Orch: Cardiology analysis + sources
-    MH-->>Orch: Mental health analysis + sources
-    
-    Orch->>Orch: Merge responses intelligently
-    Orch->>Val: Validate combined response
-    Val-->>Orch: ✅ Confidence: 0.88
-    Orch-->>Orch: Format final response
-```
 
 ---
 
-## 🏥 Healthcare Agents
+##  Healthcare Agents
 
 ### Agent Architecture
 
@@ -558,7 +527,7 @@ graph TB
 
 ---
 
-## 📚 Knowledge Bases
+##  Knowledge Bases
 
 ### Knowledge Base Architecture
 
@@ -620,7 +589,7 @@ graph TB
 
 ---
 
-## 🔢 Embeddings
+##  Embeddings
 
 ### Embedding Pipeline
 
@@ -684,7 +653,7 @@ graph LR
 
 ---
 
-## 📖 RAG Pipeline
+##  RAG Pipeline
 
 ### RAG Architecture
 
@@ -781,39 +750,11 @@ rag_config = {
 
 ### Knowledge Retrieval Pipeline
 
-```mermaid
-sequenceDiagram
-    participant User
-    participant Agent
-    participant Retriever
-    participant VDB as Vector DB
-    participant Reranker
-    participant LLM
 
-    User->>Agent: "What causes arrhythmia?"
-    Agent->>Retriever: Retrieve(query, domain="cardiology")
-    
-    Retriever->>Retriever: Embed query
-    Retriever->>VDB: Similarity search (top_k=10)
-    VDB-->>Retriever: 10 candidate chunks
-    
-    Retriever->>Retriever: Keyword search (BM25)
-    Retriever->>Retriever: Hybrid merge (RRF)
-    
-    Retriever->>Reranker: Rerank merged results
-    Reranker-->>Retriever: Top 5 reranked
-    
-    Retriever-->>Agent: 5 relevant chunks + metadata
-    
-    Agent->>Agent: Build augmented prompt
-    Agent->>LLM: Generate with context
-    LLM-->>Agent: Grounded response
-    Agent-->>User: Response + source citations
-```
 
 ---
 
-## 📝 Prompt Engineering
+##  Prompt Engineering
 
 ### Prompt Architecture
 
@@ -897,7 +838,7 @@ Respond in this structure:
 
 ---
 
-## 📊 Evaluation & Metrics
+##  Evaluation & Metrics
 
 ### Evaluation Framework
 
@@ -957,7 +898,7 @@ graph TB
 
 ---
 
-## 🛡 Hallucination Reduction
+##  Hallucination Reduction
 
 ### Multi-Layer Hallucination Prevention
 
@@ -1010,7 +951,7 @@ graph TB
 
 ---
 
-## 📁 Medical Datasets
+##  Medical Datasets
 
 ### Recommended Dataset Sources
 
@@ -1032,7 +973,7 @@ graph TB
 
 ---
 
-## 🔀 AI Pipelines
+##  AI Pipelines
 
 ### Document Processing Pipeline
 
@@ -1103,7 +1044,7 @@ graph LR
 
 ---
 
-## 📊 State Diagrams
+##  State Diagrams
 
 ### Conversation State
 
