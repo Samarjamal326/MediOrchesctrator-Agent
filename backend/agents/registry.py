@@ -1,6 +1,8 @@
-from typing import Dict, List, Optional
+﻿from typing import Dict, List, Optional
 from agents.base_agent import BaseAgent
 from agents.general_medicine.agent import general_medicine_agent
+from agents.nutrition.agent import nutrition_agent
+from agents.dermatology.agent import dermatology_agent
 
 class AgentRegistry:
     def __init__(self):
@@ -9,6 +11,8 @@ class AgentRegistry:
 
     def _register_default_agents(self) -> None:
         self.register(general_medicine_agent)
+        self.register(nutrition_agent)
+        self.register(dermatology_agent)
 
     def register(self, agent: BaseAgent) -> None:
         domain_key = agent.domain.strip().lower()
@@ -30,3 +34,4 @@ class AgentRegistry:
         return domain_key in self._agents
 
 agent_registry = AgentRegistry()
+
