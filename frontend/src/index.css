@@ -1,0 +1,102 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-main: #fcfbf9;
+    --card-surface: #ffffff;
+    --border-subtle: #e7e5e0;
+  }
+
+  .dark {
+    --bg-main: #0c1117;
+    --card-surface: #141b24;
+    --border-subtle: #222e3c;
+  }
+
+  body {
+    background-color: var(--bg-main);
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(140, 150, 160, 0.25);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(140, 150, 160, 0.45);
+}
+
+@layer utilities {
+  /* High-tech canvas dot matrix grid with radial vignette mask */
+  .canvas-dot-grid {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+    background-size: 24px 24px;
+    mask-image: radial-gradient(ellipse 95% 80% at 50% 50%, black 45%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 95% 80% at 50% 50%, black 45%, transparent 100%);
+  }
+
+  .canvas-dot-grid-light {
+    background-image: radial-gradient(rgba(0, 0, 0, 0.07) 1px, transparent 1px);
+    background-size: 24px 24px;
+    mask-image: radial-gradient(ellipse 95% 80% at 50% 50%, black 45%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 95% 80% at 50% 50%, black 45%, transparent 100%);
+  }
+
+  /* Precision obsidian milled node border style */
+  .node-milled-border {
+    background-color: rgba(9, 11, 15, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.06), 0 8px 24px -4px rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(12px);
+  }
+
+  .node-milled-border-light {
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.8), 0 8px 24px -4px rgba(0, 0, 0, 0.08);
+    backdrop-filter: blur(12px);
+  }
+}
+
+/* Animation utilities */
+@keyframes fadeInSlide {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-msg {
+  animation: fadeInSlide 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes pulse-flow {
+  0% {
+    stroke-dashoffset: 24;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-cable-flow {
+  stroke-dasharray: 6 6;
+  animation: pulse-flow 1.2s linear infinite;
+}
