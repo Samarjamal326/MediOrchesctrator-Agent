@@ -69,6 +69,7 @@ export default function App() {
   const [currentRoutedDomain, setCurrentRoutedDomain] = useState<string | null>('general_medicine');
   const [lastQuery, setLastQuery] = useState<string>('');
   const [lastIsSafe, setLastIsSafe] = useState<boolean>(true);
+  const [lastExecutionTrace, setLastExecutionTrace] = useState<any | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -132,6 +133,7 @@ export default function App() {
       const data = await response.json();
       setCurrentRoutedDomain(data.domain);
       setLastIsSafe(data.is_safe ?? true);
+      setLastExecutionTrace(data.execution_trace || null);
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -187,7 +189,7 @@ export default function App() {
   ];
 
   return (
-    <div className="min-h-screen w-full bg-[#000000] text-white font-sans selection:bg-blue-500/30 selection:text-white relative">
+    <div className="min-h-screen w-full bg-[#f3f7f4] dark:bg-[#000000] text-zinc-900 dark:text-white font-sans selection:bg-emerald-500/30 selection:text-emerald-950 dark:selection:text-white relative transition-colors duration-200">
 
       {/* ======= FLOATING NAVBAR ======= */}
       <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 flex items-center justify-between w-[95%] max-w-7xl">
@@ -196,21 +198,25 @@ export default function App() {
         <a
           href="#"
           onClick={(e) => { e.preventDefault(); setActiveTab('platform'); }}
-          className="flex items-center gap-2.5 text-white text-xl font-bold tracking-tight cursor-pointer hover:opacity-80 transition-opacity"
+          className="flex items-center gap-2.5 text-zinc-900 dark:text-white text-xl font-bold tracking-tight cursor-pointer hover:opacity-80 transition-opacity"
         >
-          <div className="w-6 h-6 rounded-md bg-white flex items-center justify-center text-black">
+          <div className="w-7 h-7 rounded-lg bg-emerald-600 dark:bg-white flex items-center justify-center text-white dark:text-black shadow-sm">
             <Stethoscope className="w-4 h-4 stroke-[2.5]" />
           </div>
-          <span>MediOrchestrator</span>
+          <span className="font-sans font-bold">MediOrchestrator</span>
         </a>
 
         {/* Center Nav Pill */}
-        <div className="hidden md:flex items-center bg-zinc-900/60 backdrop-blur-xl border border-white/10 rounded-full p-1.5">
+        <div className="hidden md:flex items-center bg-white/80 dark:bg-zinc-900/60 backdrop-blur-xl border border-emerald-900/10 dark:border-white/10 rounded-full p-1.5 shadow-sm">
           {NAV_TABS.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`rounded-full px-5 py-2 text-sm font-semibold transition-all ${activeTab === tab.id ? 'text-black bg-white' : 'text-zinc-300 hover:text-white'}`}
+              className={`rounded-full px-5 py-2 text-sm font-semibold transition-all ${
+                activeTab === tab.id
+                  ? 'text-white bg-emerald-700 dark:text-black dark:bg-white shadow-sm'
+                  : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-white'
+              }`}
             >
               {tab.label}
             </button>
@@ -219,15 +225,16 @@ export default function App() {
 
         {/* Right controls */}
         <div className="flex items-center gap-3">
-          <div className="hidden sm:flex items-center gap-2 text-xs font-mono bg-zinc-900/70 border border-white/10 px-3 py-1.5 rounded-full">
-            <span className={`w-2 h-2 rounded-full ${systemOnline ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
-            <span className="text-zinc-300">{systemOnline ? 'ONLINE // 8000' : 'BACKEND IDLE'}</span>
+          <div className="hidden sm:flex items-center gap-2 text-xs font-mono bg-white/80 dark:bg-zinc-900/70 border border-emerald-900/10 dark:border-white/10 px-3 py-1.5 rounded-full shadow-sm">
+            <span className={`w-2 h-2 rounded-full ${systemOnline ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`} />
+            <span className="text-zinc-700 dark:text-zinc-300">{systemOnline ? 'ONLINE // 8000' : 'BACKEND IDLE'}</span>
           </div>
           <button
             onClick={() => setIsDark(!isDark)}
-            className="p-2 rounded-full bg-zinc-900/60 border border-white/10 text-zinc-300 hover:text-white transition-colors"
+            className="p-2.5 rounded-full bg-white/80 dark:bg-zinc-900/60 border border-emerald-900/10 dark:border-white/10 text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white shadow-sm transition-colors"
+            title={isDark ? "Switch to Greenish Light Mode" : "Switch to Dark Mode"}
           >
-            {isDark ? <Sun className="w-4 h-4 text-amber-300" /> : <Moon className="w-4 h-4" />}
+            {isDark ? <Sun className="w-4 h-4 text-amber-300" /> : <Moon className="w-4 h-4 text-emerald-800" />}
           </button>
         </div>
       </nav>
@@ -266,9 +273,12 @@ export default function App() {
         <VerticalArchitecturePage
           currentRoutedDomain={currentRoutedDomain}
           lastQuery={lastQuery}
+          lastResponse={messages.filter(m => m.sender === 'assistant' && m.id !== 'welcome-01').slice(-1)[0]?.content || ''}
           isSafe={lastIsSafe}
           isProcessing={isLoading}
+          executionTrace={lastExecutionTrace}
           onSelectAgent={(agent) => setSelectedAgent(agent)}
+          onNavigateToChat={() => setActiveTab('chatbot')}
         />
       )}
 
