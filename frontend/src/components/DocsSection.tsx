@@ -297,18 +297,18 @@ export const DocsSection: React.FC = () => {
   const activeDomain = TWELVE_MEDICAL_DOMAINS.find(d => d.id === selectedDomainId) || TWELVE_MEDICAL_DOMAINS[0];
 
   return (
-    <div className="w-full max-w-6xl mx-auto py-4 px-3 sm:px-6">
+    <div className="w-full max-w-6xl mx-auto py-4 px-3 sm:px-6 text-zinc-900 dark:text-white transition-colors duration-200">
 
       {/* Top Header Badge & Title */}
       <div className="text-center mb-8 max-w-2xl mx-auto">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] border border-white/10 text-zinc-400 text-xs font-mono mb-3">
-          <BookOpen className="w-3.5 h-3.5 text-blue-400" />
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-950/5 dark:bg-white/[0.04] border border-emerald-900/15 dark:border-white/10 text-emerald-800 dark:text-zinc-400 text-xs font-mono mb-3">
+          <BookOpen className="w-3.5 h-3.5 text-emerald-700 dark:text-blue-400" />
           <span>THEORETICAL ARCHITECTURE & CLINICAL FOUNDATIONS</span>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-white">
+        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 dark:text-white">
           System Documentation & Invariants
         </h1>
-        <p className="text-sm text-zinc-400 mt-2 max-w-lg mx-auto leading-relaxed">
+        <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-2 max-w-lg mx-auto leading-relaxed">
           Comprehensive theoretical specification of the dual-layer medical control spine, the 12 clinical specialty agents, and deterministic safety invariants.
         </p>
 
@@ -318,8 +318,8 @@ export const DocsSection: React.FC = () => {
             onClick={() => setViewMode('pipeline')}
             className={`px-4 py-1.5 rounded-full text-xs font-mono font-medium transition-all ${
               viewMode === 'pipeline'
-                ? 'bg-white text-black font-semibold shadow-lg'
-                : 'bg-white/[0.04] border border-white/10 text-zinc-400 hover:text-white'
+                ? 'bg-emerald-700 text-white dark:bg-white dark:text-black font-semibold shadow-sm'
+                : 'bg-white/80 dark:bg-white/[0.04] border border-emerald-900/10 dark:border-white/10 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white shadow-sm'
             }`}
           >
             Pipeline Explorer
@@ -328,8 +328,8 @@ export const DocsSection: React.FC = () => {
             onClick={() => setViewMode('domains')}
             className={`px-4 py-1.5 rounded-full text-xs font-mono font-medium transition-all ${
               viewMode === 'domains'
-                ? 'bg-white text-black font-semibold shadow-lg'
-                : 'bg-white/[0.04] border border-white/10 text-zinc-400 hover:text-white'
+                ? 'bg-emerald-700 text-white dark:bg-white dark:text-black font-semibold shadow-sm'
+                : 'bg-white/80 dark:bg-white/[0.04] border border-emerald-900/10 dark:border-white/10 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white shadow-sm'
             }`}
           >
             12 Specialty Agents
@@ -338,8 +338,8 @@ export const DocsSection: React.FC = () => {
             onClick={() => setViewMode('invariants')}
             className={`px-4 py-1.5 rounded-full text-xs font-mono font-medium transition-all ${
               viewMode === 'invariants'
-                ? 'bg-white text-black font-semibold shadow-lg'
-                : 'bg-white/[0.04] border border-white/10 text-zinc-400 hover:text-white'
+                ? 'bg-emerald-700 text-white dark:bg-white dark:text-black font-semibold shadow-sm'
+                : 'bg-white/80 dark:bg-white/[0.04] border border-emerald-900/10 dark:border-white/10 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white shadow-sm'
             }`}
           >
             Safety Invariants
@@ -352,13 +352,13 @@ export const DocsSection: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           
           {/* Left Sidebar: Step Navigation */}
-          <div className="lg:col-span-4 rounded-2xl border border-white/10 bg-[#09090b]/80 backdrop-blur-xl p-3 shadow-2xl">
-            <div className="flex items-center justify-between px-3 py-2 text-zinc-400 text-xs font-mono border-b border-white/[0.06] mb-2">
+          <div className="lg:col-span-4 rounded-2xl border border-emerald-900/10 dark:border-white/10 bg-white/95 dark:bg-[#09090b]/80 backdrop-blur-xl p-3 shadow-lg dark:shadow-2xl">
+            <div className="flex items-center justify-between px-3 py-2 text-zinc-500 dark:text-zinc-400 text-xs font-mono border-b border-emerald-900/10 dark:border-white/[0.06] mb-2">
               <div className="flex items-center gap-2">
-                <Workflow className="w-3.5 h-3.5 text-blue-400" />
+                <Workflow className="w-3.5 h-3.5 text-emerald-700 dark:text-blue-400" />
                 <span className="tracking-wider uppercase">PIPELINE_STAGES</span>
               </div>
-              <span className="text-[10px] text-zinc-600 font-mono">6 STAGES</span>
+              <span className="text-[10px] text-zinc-400 dark:text-zinc-600 font-mono">6 STAGES</span>
             </div>
 
             <div className="space-y-1.5">
@@ -370,25 +370,25 @@ export const DocsSection: React.FC = () => {
                     onClick={() => setSelectedStepId(step.id)}
                     className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-left transition-all group ${
                       isSelected
-                        ? 'bg-blue-600/15 border border-blue-500/30 text-white'
-                        : 'hover:bg-white/[0.03] text-zinc-400 hover:text-zinc-200 border border-transparent'
+                        ? 'bg-emerald-100/70 border border-emerald-500/40 text-emerald-900 dark:bg-blue-600/15 dark:border-blue-500/30 dark:text-white font-medium'
+                        : 'hover:bg-emerald-50/60 dark:hover:bg-white/[0.03] text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200 border border-transparent'
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <span className={`font-mono text-xs ${isSelected ? 'text-blue-400 font-bold' : 'text-zinc-600 group-hover:text-zinc-500'}`}>
+                      <span className={`font-mono text-xs ${isSelected ? 'text-emerald-700 dark:text-blue-400 font-bold' : 'text-zinc-400 dark:text-zinc-600 group-hover:text-zinc-600 dark:group-hover:text-zinc-500'}`}>
                         {step.stepNumber}
                       </span>
                       <div>
-                        <div className={`text-sm font-medium ${isSelected ? 'text-white' : 'text-zinc-300'}`}>
+                        <div className={`text-sm font-medium ${isSelected ? 'text-zinc-900 dark:text-white' : 'text-zinc-700 dark:text-zinc-300'}`}>
                           {step.title}
                         </div>
-                        <div className="text-[10px] font-mono text-zinc-500">
+                        <div className="text-[10px] font-mono text-zinc-400 dark:text-zinc-500">
                           {step.category}
                         </div>
                       </div>
                     </div>
                     {isSelected && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.8)]" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 dark:bg-blue-400 shadow-[0_0_8px_rgba(16,185,129,0.8)] dark:shadow-[0_0_8px_rgba(96,165,250,0.8)]" />
                     )}
                   </button>
                 );
@@ -397,17 +397,17 @@ export const DocsSection: React.FC = () => {
           </div>
 
           {/* Right Main Panel: Theoretical Window */}
-          <div className="lg:col-span-8 rounded-2xl border border-white/10 bg-[#09090b]/90 backdrop-blur-xl overflow-hidden shadow-2xl flex flex-col">
+          <div className="lg:col-span-8 rounded-2xl border border-emerald-900/10 dark:border-white/10 bg-white/95 dark:bg-[#09090b]/90 backdrop-blur-xl overflow-hidden shadow-xl dark:shadow-2xl flex flex-col">
             
             {/* Header Window Strip */}
-            <div className="px-5 py-3.5 border-b border-white/[0.06] bg-black/40 flex items-center justify-between flex-wrap gap-2">
+            <div className="px-5 py-3.5 border-b border-emerald-900/10 dark:border-white/[0.06] bg-emerald-50/60 dark:bg-black/40 flex items-center justify-between flex-wrap gap-2">
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-1.5">
                   <div className="w-2.5 h-2.5 rounded-full bg-rose-500/80" />
                   <div className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
                   <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
                 </div>
-                <span className="font-mono text-xs text-zinc-400 font-medium">
+                <span className="font-mono text-xs text-zinc-600 dark:text-zinc-400 font-medium">
                   STAGE_{activeStep.stepNumber} // {activeStep.category.toUpperCase()}
                 </span>
               </div>
@@ -415,12 +415,12 @@ export const DocsSection: React.FC = () => {
               {/* Status Badge */}
               <span className={`inline-flex items-center gap-1.5 text-[10px] font-mono font-semibold px-2.5 py-1 rounded-full border ${
                 activeStep.badgeType === 'deterministic'
-                  ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                  ? 'bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20'
                   : activeStep.badgeType === 'safety'
-                  ? 'bg-rose-500/10 text-rose-400 border-rose-500/20'
+                  ? 'bg-rose-100 text-rose-800 border-rose-300 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20'
                   : activeStep.badgeType === 'audit'
-                  ? 'bg-purple-500/10 text-purple-400 border-purple-500/20'
-                  : 'bg-blue-500/10 text-blue-400 border-blue-500/20'
+                  ? 'bg-purple-100 text-purple-800 border-purple-300 dark:bg-purple-500/10 dark:text-purple-400 dark:border-purple-500/20'
+                  : 'bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20'
               }`}>
                 <CheckCircle className="w-3 h-3" />
                 {activeStep.badge}
@@ -432,10 +432,10 @@ export const DocsSection: React.FC = () => {
               
               {/* Heading & Subheading */}
               <div>
-                <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+                <h2 className="text-xl sm:text-2xl font-bold text-zinc-900 dark:text-white tracking-tight">
                   {activeStep.heading}
                 </h2>
-                <p className="text-sm text-zinc-400 mt-2 leading-relaxed">
+                <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-2 leading-relaxed">
                   {activeStep.subheading}
                 </p>
               </div>
