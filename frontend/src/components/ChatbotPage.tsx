@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactMarkdown from 'react-markdown';
 import {
   Stethoscope,
   Send,
@@ -138,7 +139,33 @@ export const ChatbotPage: React.FC<ChatbotPageProps> = ({
                       ? 'bg-emerald-700 text-white rounded-tr-none font-medium dark:bg-emerald-700 dark:text-white' 
                       : 'bg-emerald-50/50 text-zinc-900 border border-emerald-900/10 dark:bg-[#151c18] dark:text-zinc-100 dark:border-emerald-500/20 rounded-tl-none'
                   }`}>
-                    <div className="whitespace-pre-wrap">{msg.content}</div>
+                    <div className="prose prose-sm dark:prose-invert max-w-none">
+                    <ReactMarkdown
+                      components={{
+                        p: ({ children }) => <p className="mb-2 last:mb-0 leading-relaxed">{children}</p>,
+                        strong: ({ children }) => <strong className="font-semibold text-emerald-800 dark:text-emerald-300">{children}</strong>,
+                        ul: ({ children }) => <ul className="list-disc list-outside ml-4 space-y-1 my-2">{children}</ul>,
+                        ol: ({ children }) => <ol className="list-decimal list-outside ml-4 space-y-1 my-2">{children}</ol>,
+                        li: ({ children }) => <li className="leading-relaxed">{children}</li>,
+                        table: ({ children }) => (
+                          <div className="overflow-x-auto my-3">
+                            <table className="w-full text-xs border-collapse rounded-lg overflow-hidden">{children}</table>
+                          </div>
+                        ),
+                        thead: ({ children }) => <thead className="bg-emerald-100/80 dark:bg-emerald-950/60">{children}</thead>,
+                        th: ({ children }) => <th className="px-3 py-2 text-left font-semibold text-emerald-900 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/50">{children}</th>,
+                        td: ({ children }) => <td className="px-3 py-2 border border-emerald-100 dark:border-emerald-900/50 text-zinc-800 dark:text-zinc-200">{children}</td>,
+                        tr: ({ children }) => <tr className="even:bg-emerald-50/40 dark:even:bg-emerald-950/20">{children}</tr>,
+                        h1: ({ children }) => <h1 className="text-base font-bold mt-3 mb-1 text-zinc-900 dark:text-zinc-100">{children}</h1>,
+                        h2: ({ children }) => <h2 className="text-sm font-bold mt-2 mb-1 text-zinc-900 dark:text-zinc-100">{children}</h2>,
+                        h3: ({ children }) => <h3 className="text-sm font-semibold mt-2 mb-1 text-zinc-800 dark:text-zinc-200">{children}</h3>,
+                        code: ({ children }) => <code className="px-1 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950/50 text-emerald-900 dark:text-emerald-300 text-[11px] font-mono">{children}</code>,
+                        blockquote: ({ children }) => <blockquote className="border-l-2 border-emerald-500/50 pl-3 italic text-zinc-600 dark:text-zinc-400 my-2">{children}</blockquote>,
+                      }}
+                    >
+                      {msg.content}
+                    </ReactMarkdown>
+                    </div>
                     {!isUser && (
                       <div className="mt-3.5 pt-2.5 border-t border-emerald-900/10 dark:border-white/[0.08] flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
                         <span className="font-mono">{msg.timestamp}</span>
