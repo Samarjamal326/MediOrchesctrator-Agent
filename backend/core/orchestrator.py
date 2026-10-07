@@ -61,7 +61,13 @@ class QueryOrchestrator:
                 f"The query was classified as '{domain}' but this domain is not yet supported."
             )
 
-        raw_response = await agent.process(query)
+        raw_response = await agent.process(
+            query=query,
+            model=model,
+            api_key=api_key,
+            api_base=api_base,
+            provider=provider
+        )
         agent_trace = {
             "stage": "03_CLINICAL_SPECIALIST",
             "agent_name": agent.domain,
