@@ -29,6 +29,9 @@ class LLMService:
                 target_base = "https://api.groq.com/openai/v1"
             elif "openrouter" in (provider or "").lower() and not api_base:
                 target_base = "https://openrouter.ai/api/v1"
+            elif "gemini" in (provider or "").lower() and not api_base:
+                # Gemini OpenAI-compatible endpoint
+                target_base = "https://generativelanguage.googleapis.com/v1beta/openai"
 
             url = f"{target_base}/chat/completions"
             headers = {
