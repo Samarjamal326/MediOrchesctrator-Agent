@@ -8,18 +8,8 @@ import { UnifiedLandingView } from './components/UnifiedLandingView';
 import { AgentDetailModal } from './components/AgentDetailModal';
 import { DocsSection } from './components/DocsSection';
 import { VerticalArchitecturePage } from './components/VerticalArchitecturePage';
-import { ChatbotPage } from './components/ChatbotPage';
+import { ChatbotPage, ConversationItem, ChatMessage } from './components/ChatbotPage';
 import { TWELVE_MEDICAL_DOMAINS, MedicalDomainAgent } from './data/medicalDomains';
-
-interface Message {
-  id: string;
-  sender: 'user' | 'assistant';
-  content: string;
-  timestamp: string;
-  domain?: string;
-  isSafe?: boolean;
-  safetyNote?: string;
-}
 
 const SAMPLE_CASE_STARTERS = [
   {
@@ -44,23 +34,29 @@ const SAMPLE_CASE_STARTERS = [
   }
 ];
 
+const DEFAULT_WELCOME_MSG: ChatMessage = {
+  id: 'welcome-01',
+  sender: 'assistant',
+  content: "MediOrchestrator online. Your inquiry will be routed through 12 clinical domain agents, verified by dual safety guardrails, and grounded with multi-turn patient memory.\n\nDescribe your symptoms or health question below.",
+  timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+  domain: 'general_medicine',
+  isSafe: true,
+};
+
 type TabId = 'platform' | 'chatbot' | 'architecture' | 'docs';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabId>('platform');
   const [isDark, setIsDark] = useState<boolean>(true);
 
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 'welcome-01',
-      sender: 'assistant',
-      content: "MediOrchestrator online. Your inquiry will be routed through 12 clinical domain agents, verified by dual safety guardrails, and grounded with RAG knowledge retrieval.\n\nDescribe your symptoms or health question below.",
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      domain: 'general_medicine',
-      isSafe: true,
-    }
-  ]);
+  // Multi-User and Multi-Conversation state
+  const [userId, setUserId] = useState<string>(() => {
+    return localStorage.getItem('mediorchestrator_user_id') || 'patient_01';
+  });
+  const [conversations, setConversations] = useState<ConversationItem[]>([]);
+  const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
 
+  const [messages, setMessages] = useState<ChatMessage[]>([DEFAULT_WELCOME_MSG]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -79,6 +75,7 @@ export default function App() {
     else document.documentElement.classList.remove('dark');
   }, [isDark]);
 
+  // Health check
   useEffect(() => {
     const check = async () => {
       try {
@@ -91,6 +88,59 @@ export default function App() {
     return () => clearInterval(iv);
   }, []);
 
+  // Fetch conversations when user changes
+  useEffect(() => {
+    localStorage.setItem('mediorchestrator_user_id', userId);
+    fetchConversations();
+  }, [userId]);
+
+  const fetchConversations = async () => {
+    try {
+      const res = await fetch(`http://127.0.0.1:8000/api/v1/conversations?user_id=${encodeURIComponent(userId)}`);
+      if (res.ok) {
+        const data = await res.json();
+        setConversations(data);
+      }
+    } catch (e) {
+      console.warn("Failed to fetch conversations", e);
+    }
+  };
+
+  // Load messages when active conversation changes
+  useEffect(() => {
+    if (!activeConversationId) {
+      setMessages([DEFAULT_WELCOME_MSG]);
+      return;
+    }
+
+    const loadMessages = async () => {
+      try {
+        const res = await fetch(`http://127.0.0.1:8000/api/v1/conversations/${activeConversationId}/messages`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.length > 0) {
+            const mapped: ChatMessage[] = data.map((m: any) => ({
+              id: m.id,
+              sender: m.role === 'assistant' ? 'assistant' : 'user',
+              content: m.content,
+              timestamp: new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              domain: m.domain,
+              isSafe: m.is_safe,
+              safetyNote: m.safety_note
+            }));
+            setMessages(mapped);
+          } else {
+            setMessages([DEFAULT_WELCOME_MSG]);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load thread messages", err);
+      }
+    };
+
+    loadMessages();
+  }, [activeConversationId]);
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isLoading]);
@@ -101,13 +151,33 @@ export default function App() {
     setTimeout(() => setCopiedId(null), 2000);
   };
 
+  const handleNewConversation = () => {
+    setActiveConversationId(null);
+    setMessages([DEFAULT_WELCOME_MSG]);
+    setCurrentRoutedDomain('general_medicine');
+  };
+
+  const handleDeleteConversation = async (convId: string) => {
+    try {
+      await fetch(`http://127.0.0.1:8000/api/v1/conversations/${convId}?user_id=${encodeURIComponent(userId)}`, {
+        method: 'DELETE'
+      });
+      setConversations(prev => prev.filter(c => c.id !== convId));
+      if (activeConversationId === convId) {
+        handleNewConversation();
+      }
+    } catch (e) {
+      console.error("Failed to delete conversation", e);
+    }
+  };
+
   const handleSend = async (customPrompt?: string) => {
     const queryToSend = (customPrompt || input).trim();
     if (!queryToSend || isLoading) return;
 
     setLastQuery(queryToSend);
 
-    const userMessage: Message = {
+    const userMessage: ChatMessage = {
       id: Date.now().toString(),
       sender: 'user',
       content: queryToSend,
@@ -122,7 +192,11 @@ export default function App() {
       const response = await fetch('http://127.0.0.1:8000/api/v1/query', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: queryToSend }),
+        body: JSON.stringify({
+          query: queryToSend,
+          user_id: userId,
+          conversation_id: activeConversationId
+        }),
       });
 
       if (!response.ok) {
@@ -135,7 +209,12 @@ export default function App() {
       setLastIsSafe(data.is_safe ?? true);
       setLastExecutionTrace(data.execution_trace || null);
 
-      const assistantMessage: Message = {
+      if (data.conversation_id && data.conversation_id !== activeConversationId) {
+        setActiveConversationId(data.conversation_id);
+      }
+      fetchConversations();
+
+      const assistantMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         sender: 'assistant',
         content: data.response,
@@ -146,7 +225,7 @@ export default function App() {
       };
       setMessages(prev => [...prev, assistantMessage]);
     } catch (err: any) {
-      const errorMessage: Message = {
+      const errorMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         sender: 'assistant',
         content: `Pipeline Exception: ${err.message || 'Could not connect to the backend.'}`,
@@ -168,78 +247,74 @@ export default function App() {
     }
   };
 
-  const clearChat = () => {
-    setMessages([{
-      id: Date.now().toString(),
-      sender: 'assistant',
-      content: "Session cleared. Ready for your next clinical inquiry.",
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      domain: 'general_medicine',
-      isSafe: true
-    }]);
-    setCurrentRoutedDomain('general_medicine');
-    setLastQuery('');
-  };
-
-  const NAV_TABS: { id: TabId; label: string }[] = [
-    { id: 'platform', label: 'Home' },
-    { id: 'chatbot', label: 'Chatbot' },
-    { id: 'architecture', label: 'Architecture' },
-    { id: 'docs', label: 'Docs' },
-  ];
-
   return (
-    <div className="min-h-screen w-full bg-[#f3f7f4] dark:bg-[#000000] text-zinc-900 dark:text-white font-sans selection:bg-emerald-500/30 selection:text-emerald-950 dark:selection:text-white relative transition-colors duration-200">
-
-      {/* ======= FLOATING NAVBAR ======= */}
-      <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 flex items-center justify-between w-[95%] max-w-7xl">
-
-        {/* Brand */}
-        <a
-          href="#"
-          onClick={(e) => { e.preventDefault(); setActiveTab('platform'); }}
-          className="flex items-center gap-2.5 text-zinc-900 dark:text-white text-xl font-bold tracking-tight cursor-pointer hover:opacity-80 transition-opacity"
-        >
-          <div className="w-7 h-7 rounded-lg bg-emerald-600 dark:bg-white flex items-center justify-center text-white dark:text-black shadow-sm">
-            <Stethoscope className="w-4 h-4 stroke-[2.5]" />
+    <div className="min-h-screen bg-[#f3f7f4] dark:bg-[#000000] text-zinc-900 dark:text-white transition-colors duration-200">
+      {/* Top Navbar */}
+      <nav className="fixed top-0 left-0 right-0 z-50 h-16 border-b border-emerald-900/10 dark:border-white/[0.08] bg-white/80 dark:bg-black/80 backdrop-blur-md px-4 sm:px-8 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center text-white font-bold shadow-md">
+            <Stethoscope className="w-5 h-5" />
           </div>
-          <span className="font-sans font-bold">MediOrchestrator</span>
-        </a>
-
-        {/* Center Nav Pill */}
-        <div className="hidden md:flex items-center bg-white/80 dark:bg-zinc-900/60 backdrop-blur-xl border border-emerald-900/10 dark:border-white/10 rounded-full p-1.5 shadow-sm">
-          {NAV_TABS.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`rounded-full px-5 py-2 text-sm font-semibold transition-all ${
-                activeTab === tab.id
-                  ? 'text-white bg-emerald-700 dark:text-black dark:bg-white shadow-sm'
-                  : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-white'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
+          <span className="font-bold text-lg tracking-tight bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">
+            MediOrchestrator
+          </span>
         </div>
 
-        {/* Right controls */}
+        {/* Center Tabs */}
+        <div className="flex items-center gap-1 p-1 rounded-xl bg-zinc-100 dark:bg-white/[0.05] border border-black/5 dark:border-white/5 text-xs font-medium">
+          <button
+            onClick={() => setActiveTab('platform')}
+            className={`px-3 py-1.5 rounded-lg transition-all ${
+              activeTab === 'platform' ? 'bg-white dark:bg-emerald-600 text-zinc-900 dark:text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-white'
+            }`}
+          >
+            Home
+          </button>
+          <button
+            onClick={() => setActiveTab('chatbot')}
+            className={`px-3 py-1.5 rounded-lg transition-all ${
+              activeTab === 'chatbot' ? 'bg-white dark:bg-emerald-600 text-zinc-900 dark:text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-white'
+            }`}
+          >
+            Chatbot
+          </button>
+          <button
+            onClick={() => setActiveTab('architecture')}
+            className={`px-3 py-1.5 rounded-lg transition-all ${
+              activeTab === 'architecture' ? 'bg-white dark:bg-emerald-600 text-zinc-900 dark:text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-white'
+            }`}
+          >
+            Architecture
+          </button>
+          <button
+            onClick={() => setActiveTab('docs')}
+            className={`px-3 py-1.5 rounded-lg transition-all ${
+              activeTab === 'docs' ? 'bg-white dark:bg-emerald-600 text-zinc-900 dark:text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-white'
+            }`}
+          >
+            Docs
+          </button>
+        </div>
+
+        {/* Right Status & Dark Mode */}
         <div className="flex items-center gap-3">
-          <div className="hidden sm:flex items-center gap-2 text-xs font-mono bg-white/80 dark:bg-zinc-900/70 border border-emerald-900/10 dark:border-white/10 px-3 py-1.5 rounded-full shadow-sm">
-            <span className={`w-2 h-2 rounded-full ${systemOnline ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`} />
-            <span className="text-zinc-700 dark:text-zinc-300">{systemOnline ? 'ONLINE // 8000' : 'BACKEND IDLE'}</span>
+          <div className="flex items-center gap-2 px-2.5 py-1 rounded-full text-[11px] font-mono border border-black/5 dark:border-white/10 bg-zinc-50 dark:bg-white/5">
+            <div className={`w-2 h-2 rounded-full ${systemOnline ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`} />
+            <span className="text-zinc-600 dark:text-zinc-300">
+              {systemOnline ? 'ONLINE // 8000' : 'OFFLINE'}
+            </span>
           </div>
+
           <button
             onClick={() => setIsDark(!isDark)}
-            className="p-2.5 rounded-full bg-white/80 dark:bg-zinc-900/60 border border-emerald-900/10 dark:border-white/10 text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white shadow-sm transition-colors"
-            title={isDark ? "Switch to Greenish Light Mode" : "Switch to Dark Mode"}
+            className="p-2 rounded-lg border border-black/5 dark:border-white/10 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-white/5 transition-colors"
           >
-            {isDark ? <Sun className="w-4 h-4 text-amber-300" /> : <Moon className="w-4 h-4 text-emerald-800" />}
+            {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </button>
         </div>
       </nav>
 
-      {/* ======= PLATFORM (Landing) ======= */}
+      {/* Main View Router */}
       {activeTab === 'platform' && (
         <UnifiedLandingView
           onScrollToChat={() => setActiveTab('chatbot')}
@@ -248,7 +323,6 @@ export default function App() {
         />
       )}
 
-      {/* ======= CHATBOT PAGE ======= */}
       {activeTab === 'chatbot' && (
         <ChatbotPage
           messages={messages}
@@ -263,45 +337,43 @@ export default function App() {
           onSend={handleSend}
           onKeyDown={handleKeyDown}
           onCopy={handleCopy}
-          onClear={clearChat}
+          onClear={() => setMessages([DEFAULT_WELCOME_MSG])}
           onSelectAgent={(agent) => setSelectedAgent(agent)}
+          // Multi-chat props
+          conversations={conversations}
+          activeConversationId={activeConversationId}
+          userId={userId}
+          onSelectConversation={(id) => setActiveConversationId(id)}
+          onNewConversation={handleNewConversation}
+          onDeleteConversation={handleDeleteConversation}
+          onChangeUser={(newId) => setUserId(newId)}
         />
       )}
 
-      {/* ======= ARCHITECTURE PAGE ======= */}
       {activeTab === 'architecture' && (
         <VerticalArchitecturePage
-          currentRoutedDomain={currentRoutedDomain}
           lastQuery={lastQuery}
-          lastResponse={messages.filter(m => m.sender === 'assistant' && m.id !== 'welcome-01').slice(-1)[0]?.content || ''}
+          currentRoutedDomain={currentRoutedDomain}
           isSafe={lastIsSafe}
-          isProcessing={isLoading}
           executionTrace={lastExecutionTrace}
           onSelectAgent={(agent) => setSelectedAgent(agent)}
-          onNavigateToChat={() => setActiveTab('chatbot')}
         />
       )}
 
-      {/* ======= DOCS ======= */}
-      {activeTab === 'docs' && (
-        <main className="w-full pt-28 pb-16 px-4">
-          <DocsSection />
-        </main>
-      )}
+      {activeTab === 'docs' && <DocsSection />}
 
-      {/* ======= AGENT DETAIL MODAL ======= */}
+      {/* Domain Agent Detail Modal */}
       {selectedAgent && (
         <AgentDetailModal
           agent={selectedAgent}
           onClose={() => setSelectedAgent(null)}
-          isCurrentlyRouted={currentRoutedDomain === selectedAgent.domain}
-          onSelectPrompt={(p) => {
-            handleSend(p);
+          onSelectPrompt={(p: string) => {
+            setSelectedAgent(null);
             setActiveTab('chatbot');
+            handleSend(p);
           }}
         />
       )}
-
     </div>
   );
 }
