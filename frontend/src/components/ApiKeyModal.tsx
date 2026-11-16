@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Key, Server, Cpu, Check, Eye, EyeOff, ShieldCheck, Zap } from 'lucide-react';
 
 export interface ModelConfig {
-  provider: 'ollama' | 'openai' | 'groq' | 'openrouter';
+  provider: 'ollama' | 'openai' | 'groq' | 'openrouter' | 'gemini';
   model: string;
   apiKey: string;
   apiBase: string;
@@ -51,6 +51,9 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({
     } else if (p === 'openrouter') {
       setModel('deepseek/deepseek-chat');
       setApiBase('https://openrouter.ai/api/v1');
+    } else if (p === 'gemini') {
+      setModel('gemini-2.0-flash');
+      setApiBase('https://generativelanguage.googleapis.com/v1beta/openai');
     }
   };
 
@@ -103,8 +106,8 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({
             <label className="block text-[11px] font-mono uppercase tracking-wider text-slate-500 dark:text-zinc-400 mb-1.5">
               Inference Engine / Provider
             </label>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              {(['ollama', 'openai', 'groq', 'openrouter'] as const).map((p) => (
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+              {(['ollama', 'openai', 'groq', 'openrouter', 'gemini'] as const).map((p) => (
                 <button
                   key={p}
                   type="button"
