@@ -9,6 +9,8 @@ venv/
 .env
 .env.local
 .env.production
+*.db
+*.sqlite3
 
 # Build
 dist/
