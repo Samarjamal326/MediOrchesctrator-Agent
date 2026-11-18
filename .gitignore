@@ -12,6 +12,13 @@ venv/
 *.db
 *.sqlite3
 
+# Large dataset archives & Vector indexes
+*.zip
+*.tar.gz
+*.csv.gz
+backend/rag/chroma_db/
+data/
+
 # Build
 dist/
 build/
