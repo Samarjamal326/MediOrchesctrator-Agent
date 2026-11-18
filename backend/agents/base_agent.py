@@ -1,5 +1,6 @@
 from typing import Optional, AsyncGenerator
 from core.llm import llm_service
+from rag.retriever import clinical_retriever
 
 class BaseAgent:
     def __init__(
@@ -14,6 +15,21 @@ class BaseAgent:
         self.system_prompt = system_prompt
         self.temperature = temperature
 
+    def _build_augmented_context(self, query: str, context: Optional[str] = None) -> Optional[str]:
+        # Active RAG retrieval across domain knowledge (NIH MedQuAD & clinical monographs)
+        rag_hits = clinical_retriever.retrieve(query=query, domain=self.domain, top_k=2)
+        rag_context = clinical_retriever.format_for_prompt(rag_hits)
+
+        augmented = context or ""
+        if rag_context:
+            augmented = (
+                f"{augmented}\n\n"
+                f"### [CLINICAL EVIDENCE & THEORETICAL MONOGRAPHS: {self.domain.upper()}]\n"
+                f"{rag_context}\n"
+                f"Incorporate relevant pathophysiological considerations and clinical guidelines from the evidence above."
+            ).strip()
+        return augmented if augmented else None
+
     async def process(
         self,
         query: str,
@@ -24,9 +40,10 @@ class BaseAgent:
         api_base: Optional[str] = None,
         provider: str = "ollama"
     ) -> str:
+        augmented_context = self._build_augmented_context(query, context)
         prompt_parts = []
-        if context:
-            prompt_parts.append(f"Context:\n{context}")
+        if augmented_context:
+            prompt_parts.append(f"Context:\n{augmented_context}")
         
         prompt_parts.append(f"User Query:\n{query}")
         
@@ -63,9 +80,10 @@ class BaseAgent:
         api_base: Optional[str] = None,
         provider: str = "ollama"
     ) -> AsyncGenerator[str, None]:
+        augmented_context = self._build_augmented_context(query, context)
         prompt_parts = []
-        if context:
-            prompt_parts.append(f"Context:\n{context}")
+        if augmented_context:
+            prompt_parts.append(f"Context:\n{augmented_context}")
         
         prompt_parts.append(f"User Query:\n{query}")
         
