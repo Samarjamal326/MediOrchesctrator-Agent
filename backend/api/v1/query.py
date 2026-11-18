@@ -1,5 +1,6 @@
 import json
 from fastapi import APIRouter, HTTPException, status
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from core.llm import OllamaServiceError
 from core.orchestrator import query_orchestrator, UnsupportedDomainError
@@ -132,3 +133,116 @@ async def handle_query(request: QueryRequest):
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail=str(err)
         )
+
+@router.post("/query/stream")
+async def handle_query_stream(request: QueryRequest):
+    user_id = request.user_id or "default_patient"
+    conv_id = request.conversation_id
+
+    # 1. Input Safety Gate
+    input_safety = check_input_safety(request.query)
+    if not input_safety.is_safe:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=input_safety.reason or "Input failed safety check."
+        )
+    safe_query = input_safety.redacted_query
+
+    # 2. System API key fallback
+    effective_api_key = request.api_key
+    effective_provider = request.provider or "ollama"
+    effective_model = request.model
+
+    if not effective_api_key or not effective_api_key.strip():
+        if settings.GROQ_API_KEY:
+            effective_api_key = settings.GROQ_API_KEY
+            effective_provider = "groq"
+            effective_model = effective_model or "llama-3.3-70b-versatile"
+        elif settings.GEMINI_API_KEY:
+            effective_api_key = settings.GEMINI_API_KEY
+            effective_provider = "gemini"
+            effective_model = effective_model or "gemini-2.0-flash"
+        elif settings.OPENAI_API_KEY:
+            effective_api_key = settings.OPENAI_API_KEY
+            effective_provider = "openai"
+            effective_model = effective_model or "gpt-4o-mini"
+
+    # 3. Create or resolve conversation
+    if not conv_id:
+        title = safe_query[:45].strip() + ("..." if len(safe_query) > 45 else "")
+        new_conv = ConversationMemory.create_conversation(user_id=user_id, title=title)
+        conv_id = new_conv["id"]
+    else:
+        existing = ConversationMemory.get_conversation(conv_id)
+        if not existing:
+            title = safe_query[:45].strip() + ("..." if len(safe_query) > 45 else "")
+            new_conv = ConversationMemory.create_conversation(user_id=user_id, title=title)
+            conv_id = new_conv["id"]
+
+    prior_context = ConversationMemory.get_recent_context(conversation_id=conv_id, limit=6)
+
+    # 4. Record user query in memory
+    ConversationMemory.add_message(
+        conversation_id=conv_id,
+        user_id=user_id,
+        role="user",
+        content=safe_query
+    )
+
+    async def event_generator():
+        # First send conversation meta event
+        yield f"data: {json.dumps({'type': 'init', 'conversation_id': conv_id, 'pii_redacted': bool(input_safety.pii_found)})}\n\n"
+
+        final_response_text = ""
+        final_domain = "general_medicine"
+        is_safe = True
+        safety_note = None
+        execution_trace = None
+
+        try:
+            async for event in query_orchestrator.run_stream(
+                query=safe_query,
+                context=prior_context if prior_context else None,
+                user_id=user_id,
+                session_id=conv_id,
+                model=effective_model,
+                api_key=effective_api_key,
+                api_base=request.api_base,
+                provider=effective_provider
+            ):
+                if event.get("type") == "complete":
+                    final_response_text = event.get("response", "")
+                    final_domain = event.get("domain", "general_medicine")
+                    is_safe = event.get("is_safe", True)
+                    safety_note = event.get("safety_note")
+                    execution_trace = event.get("execution_trace")
+
+                yield f"data: {json.dumps(event)}\n\n"
+
+            # Record final assistant response in memory
+            if final_response_text:
+                trace_json = json.dumps(execution_trace) if execution_trace else None
+                ConversationMemory.add_message(
+                    conversation_id=conv_id,
+                    user_id=user_id,
+                    role="assistant",
+                    content=final_response_text,
+                    domain=final_domain,
+                    is_safe=is_safe,
+                    safety_note=safety_note,
+                    execution_trace=trace_json
+                )
+
+        except Exception as err:
+            error_payload = {"type": "error", "detail": str(err)}
+            yield f"data: {json.dumps(error_payload)}\n\n"
+
+    return StreamingResponse(
+        event_generator(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no"
+        }
+    )

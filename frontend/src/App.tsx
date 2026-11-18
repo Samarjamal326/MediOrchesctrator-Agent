@@ -9,6 +9,7 @@ import { AgentDetailModal } from './components/AgentDetailModal';
 import { DocsSection } from './components/DocsSection';
 import { VerticalArchitecturePage } from './components/VerticalArchitecturePage';
 import { ChatbotPage, ConversationItem, ChatMessage } from './components/ChatbotPage';
+import { ExecutionStage } from './components/ExecutionGraph';
 import { TWELVE_MEDICAL_DOMAINS, MedicalDomainAgent } from './data/medicalDomains';
 
 const SAMPLE_CASE_STARTERS = [
@@ -66,6 +67,7 @@ export default function App() {
   const [lastQuery, setLastQuery] = useState<string>('');
   const [lastIsSafe, setLastIsSafe] = useState<boolean>(true);
   const [lastExecutionTrace, setLastExecutionTrace] = useState<any | null>(null);
+  const [executionStages, setExecutionStages] = useState<ExecutionStage[]>([]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -188,8 +190,23 @@ export default function App() {
     setInput('');
     setIsLoading(true);
 
+    // Initial pipeline state for visual graph
+    const initialStages: ExecutionStage[] = [
+      { id: '00_INPUT_SAFETY', name: 'Input Guardrail', label: 'PII & Injection Scan', status: 'processing' },
+      { id: '01_QUERY_INGESTION', name: 'Query Ingestion', label: 'Protocol Ingestion', status: 'pending' },
+      { id: '02_INTENT_ROUTER', name: 'Intent Classifier', label: 'Taxonomy Routing', status: 'pending' },
+      { id: '03_CLINICAL_SPECIALIST', name: 'Clinical Specialist', label: 'Synthesis & RAG', status: 'pending' },
+      { id: '04_SAFETY_GATE', name: 'Triage Gate', label: 'Acuity Red-Flag Scan', status: 'pending' },
+      { id: '05_OUTPUT_SAFETY_GUARDRAILS', name: 'Output Guardrail', label: 'Dosage & Drug Interaction', status: 'pending' },
+    ];
+    setExecutionStages(initialStages);
+
+    const assistantMsgId = (Date.now() + 1).toString();
+    let accumulatedContent = '';
+    let messageInserted = false;
+
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/v1/query', {
+      const response = await fetch('http://127.0.0.1:8000/api/v1/query/stream', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -204,26 +221,98 @@ export default function App() {
         throw new Error(errData.detail || `Server error: HTTP ${response.status}`);
       }
 
-      const data = await response.json();
-      setCurrentRoutedDomain(data.domain);
-      setLastIsSafe(data.is_safe ?? true);
-      setLastExecutionTrace(data.execution_trace || null);
+      const reader = response.body?.getReader();
+      if (!reader) throw new Error("No response body readable from stream.");
 
-      if (data.conversation_id && data.conversation_id !== activeConversationId) {
-        setActiveConversationId(data.conversation_id);
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed.startsWith('data: ')) continue;
+          const jsonStr = trimmed.slice(6);
+          try {
+            const ev = JSON.parse(jsonStr);
+
+            if (ev.type === 'init') {
+              if (ev.conversation_id && ev.conversation_id !== activeConversationId) {
+                setActiveConversationId(ev.conversation_id);
+              }
+              // Mark Input Safety as complete
+              setExecutionStages(prev => prev.map(st => 
+                st.id === '00_INPUT_SAFETY'
+                  ? { ...st, status: 'complete', detail: ev.pii_redacted ? 'PII Sanitized' : 'Clear' }
+                  : st
+              ));
+            } else if (ev.type === 'stage_start') {
+              setExecutionStages(prev => prev.map(st =>
+                st.id === ev.stage ? { ...st, status: 'processing', detail: 'Running...' } : st
+              ));
+            } else if (ev.type === 'stage_complete') {
+              setExecutionStages(prev => prev.map(st =>
+                st.id === ev.stage
+                  ? {
+                      ...st,
+                      status: ev.data?.status === 'FLAGGED' ? 'flagged' : 'complete',
+                      latencyMs: ev.data?.latency_ms,
+                      detail: ev.data?.status === 'FLAGGED' ? 'Flags Detected' : (ev.data?.decision || 'Complete')
+                    }
+                  : st
+              ));
+
+              if (ev.stage === '02_INTENT_ROUTER' && ev.data?.classified_domain) {
+                setCurrentRoutedDomain(ev.data.classified_domain);
+              }
+            } else if (ev.type === 'token') {
+              accumulatedContent += ev.token;
+
+              if (!messageInserted) {
+                messageInserted = true;
+                const newAssistantMsg: ChatMessage = {
+                  id: assistantMsgId,
+                  sender: 'assistant',
+                  content: accumulatedContent,
+                  timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                };
+                setMessages(prev => [...prev, newAssistantMsg]);
+              } else {
+                setMessages(prev => prev.map(m =>
+                  m.id === assistantMsgId ? { ...m, content: accumulatedContent } : m
+                ));
+              }
+            } else if (ev.type === 'complete') {
+              setCurrentRoutedDomain(ev.domain);
+              setLastIsSafe(ev.is_safe ?? true);
+              setLastExecutionTrace(ev.execution_trace || null);
+
+              setMessages(prev => prev.map(m =>
+                m.id === assistantMsgId
+                  ? {
+                      ...m,
+                      content: ev.response,
+                      domain: ev.domain,
+                      isSafe: ev.is_safe ?? true,
+                      safetyNote: ev.safety_note
+                    }
+                  : m
+              ));
+              fetchConversations();
+            } else if (ev.type === 'error') {
+              throw new Error(ev.detail || 'Streaming generation error.');
+            }
+          } catch (e: any) {
+            console.warn("Failed parsing SSE event chunk", e);
+          }
+        }
       }
-      fetchConversations();
-
-      const assistantMessage: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        sender: 'assistant',
-        content: data.response,
-        domain: data.domain,
-        isSafe: data.is_safe ?? true,
-        safetyNote: data.safety_note,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      };
-      setMessages(prev => [...prev, assistantMessage]);
     } catch (err: any) {
       const errorMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
@@ -330,6 +419,7 @@ export default function App() {
           isLoading={isLoading}
           copiedId={copiedId}
           currentRoutedDomain={currentRoutedDomain}
+          executionStages={executionStages}
           messagesEndRef={messagesEndRef}
           textareaRef={textareaRef}
           sampleStarters={SAMPLE_CASE_STARTERS}

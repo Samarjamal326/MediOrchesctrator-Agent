@@ -24,6 +24,7 @@ import {
   PanelLeft
 } from 'lucide-react';
 import { TWELVE_MEDICAL_DOMAINS } from '../data/medicalDomains';
+import { ExecutionGraph, ExecutionStage } from './ExecutionGraph';
 
 export interface ConversationItem {
   id: string;
@@ -50,6 +51,7 @@ interface ChatbotPageProps {
   isLoading: boolean;
   copiedId: string | null;
   currentRoutedDomain: string | null;
+  executionStages?: ExecutionStage[];
   messagesEndRef: React.RefObject<HTMLDivElement>;
   textareaRef: React.RefObject<HTMLTextAreaElement>;
   sampleStarters: { title: string; domainBadge: string; prompt: string }[];
@@ -76,6 +78,7 @@ export const ChatbotPage: React.FC<ChatbotPageProps> = ({
   isLoading,
   copiedId,
   currentRoutedDomain,
+  executionStages,
   messagesEndRef,
   textareaRef,
   sampleStarters,
@@ -257,6 +260,14 @@ export const ChatbotPage: React.FC<ChatbotPageProps> = ({
 
           {/* Messages Feed */}
           <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 custom-scrollbar">
+            {isLoading && executionStages && executionStages.length > 0 && (
+              <div className="mb-4">
+                <ExecutionGraph
+                  stages={executionStages}
+                  activeDomain={currentRoutedDomain}
+                />
+              </div>
+            )}
             {messages.map((msg) => {
               const isUser = msg.sender === 'user';
               const domainDef = TWELVE_MEDICAL_DOMAINS.find(d => d.domain === msg.domain);
