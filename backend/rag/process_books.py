@@ -25,8 +25,9 @@ CHUNKS_BASE_DIR = os.path.join(BASE_DIR, "data", "chunks")
 
 from rag.vector_store import vector_store
 
-# Map downloaded PDF filenames to their clinical domains & titles
+# Map downloaded PDF filenames to their clinical domains & titles across all 12 domains
 BOOK_CATALOG: Dict[str, Dict[str, Any]] = {
+    # Previously Processed 4 Domains
     "Bookshelf_NBK2003.pdf": {
         "domain": "cardiology",
         "title": "National Cholesterol Education Program (NCEP) Adult Treatment Panel Clinical Guidelines",
@@ -50,6 +51,55 @@ BOOK_CATALOG: Dict[str, Dict[str, Any]] = {
         "title": "Food Safety & Micronutrient Risk Assessment Manual",
         "author": "FAO / World Health Organization",
         "skip_initial_pages": 10,
+    },
+    # Newly Automated Remaining 8 Domains
+    "NICE_NG28_Type2_Diabetes_Management.pdf": {
+        "domain": "endocrinology",
+        "title": "NICE NG28: Type 2 Diabetes in Adults Management Guidelines",
+        "author": "National Institute for Health and Care Excellence (NICE)",
+        "skip_initial_pages": 4,
+    },
+    "NICE_NG115_COPD_Management.pdf": {
+        "domain": "pulmonology",
+        "title": "NICE NG115: Chronic Obstructive Pulmonary Disease (COPD) Management",
+        "author": "National Institute for Health and Care Excellence (NICE)",
+        "skip_initial_pages": 4,
+    },
+    "NICE_NG128_Stroke_and_TIA.pdf": {
+        "domain": "neurology",
+        "title": "NICE NG128: Stroke and Transient Ischaemic Attack (TIA) Diagnosis & Management",
+        "author": "National Institute for Health and Care Excellence (NICE)",
+        "skip_initial_pages": 4,
+    },
+    "NICE_NG122_Lung_Cancer_Management.pdf": {
+        "domain": "oncology",
+        "title": "NICE NG122: Lung Cancer Diagnosis and Management",
+        "author": "National Institute for Health and Care Excellence (NICE)",
+        "skip_initial_pages": 4,
+    },
+    "NICE_NG143_Pediatric_Fever_Assessment.pdf": {
+        "domain": "pediatrics",
+        "title": "NICE NG143: Fever in Under 5s Assessment and Initial Management",
+        "author": "National Institute for Health and Care Excellence (NICE)",
+        "skip_initial_pages": 4,
+    },
+    "NICE_NG253_Sepsis_Emergency_Management.pdf": {
+        "domain": "emergency",
+        "title": "NICE NG253: Suspected Sepsis Recognition, Assessment and Early Management",
+        "author": "National Institute for Health and Care Excellence (NICE)",
+        "skip_initial_pages": 4,
+    },
+    "NICE_NG129_Crohns_Disease_Management.pdf": {
+        "domain": "gastroenterology",
+        "title": "NICE NG129: Crohn's Disease Management Guidelines",
+        "author": "National Institute for Health and Care Excellence (NICE)",
+        "skip_initial_pages": 4,
+    },
+    "NICE_CG153_Psoriasis_Assessment_Management.pdf": {
+        "domain": "dermatology",
+        "title": "NICE CG153: Psoriasis Assessment and Clinical Management",
+        "author": "National Institute for Health and Care Excellence (NICE)",
+        "skip_initial_pages": 4,
     }
 }
 
