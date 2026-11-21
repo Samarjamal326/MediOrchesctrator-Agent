@@ -6,6 +6,8 @@ from routing.agent_selector import agent_selector
 from safety.response_validator import response_validator, ResponseValidator
 from safety.output_safety import validate_output as check_output_safety
 from observability.tracer import tracer
+from cache.response_cache import response_cache
+from cache.semantic_cache import semantic_cache
 
 class UnsupportedDomainError(Exception):
     pass
@@ -44,6 +46,20 @@ class QueryOrchestrator:
             input_data={"query": query, "context_active": bool(context)},
             metadata={"provider": provider, "model": model or "qwen2.5:3b"}
         )
+
+        # Check Cache before running full pipeline
+        cached_hit = await response_cache.get(query)
+        if not cached_hit:
+            cached_hit = await semantic_cache.get_similar(query)
+
+        if cached_hit:
+            return QueryResult(
+                domain=cached_hit.get("domain", "general_medicine"),
+                response=cached_hit.get("response", ""),
+                is_safe=cached_hit.get("is_safe", True),
+                safety_note=cached_hit.get("safety_note"),
+                execution_trace=cached_hit.get("execution_trace")
+            )
 
         # Stage 1: Ingestion
         t0 = time.time()
@@ -153,6 +169,17 @@ class QueryOrchestrator:
         }
 
         tracer.end_trace(root_span, output_data={"response": final_candidate, "is_safe": validation.is_valid and output_safety.is_safe, "domain": domain})
+
+        # Save to Response Cache and Semantic Cache if safe
+        if validation.is_valid and output_safety.is_safe:
+            cache_payload = {
+                "domain": domain,
+                "response": final_candidate,
+                "is_safe": True,
+                "execution_trace": full_trace
+            }
+            await response_cache.set(query=query, payload=cache_payload, domain=domain)
+            await semantic_cache.store(query=query, response=final_candidate, domain=domain, execution_trace=full_trace, is_safe=True)
 
         if not validation.is_valid:
             final_response = validation.fallback_response or final_candidate
@@ -382,6 +409,17 @@ class QueryOrchestrator:
             "stages": [ingest_trace, route_trace, agent_trace, safety_trace, output_safety_trace, audit_trace]
         }
         tracer.end_trace(root_span, output_data={"response": final_candidate, "is_safe": validation.is_valid and output_safety.is_safe, "domain": domain})
+
+        # Save to Response Cache and Semantic Cache if safe
+        if validation.is_valid and output_safety.is_safe:
+            cache_payload = {
+                "domain": domain,
+                "response": final_candidate,
+                "is_safe": True,
+                "execution_trace": full_trace
+            }
+            await response_cache.set(query=query, payload=cache_payload, domain=domain)
+            await semantic_cache.store(query=query, response=final_candidate, domain=domain, execution_trace=full_trace, is_safe=True)
 
         combined_safety_note = None
         if not validation.is_valid:

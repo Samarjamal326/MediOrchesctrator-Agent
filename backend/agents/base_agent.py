@@ -1,6 +1,7 @@
 from typing import Optional, AsyncGenerator
 from core.llm import llm_service
 from rag.retriever import clinical_retriever
+from cache.rag_cache import rag_cache
 
 class BaseAgent:
     def __init__(
@@ -14,6 +15,27 @@ class BaseAgent:
         self.domain = domain
         self.system_prompt = system_prompt
         self.temperature = temperature
+
+    async def _build_augmented_context_async(self, query: str, context: Optional[str] = None) -> Optional[str]:
+        # Check RAG Cache first
+        cached_chunks = await rag_cache.get(query=query, domain=self.domain)
+        if cached_chunks is not None:
+            rag_context = "\n\n---\n\n".join(cached_chunks)
+        else:
+            rag_hits = clinical_retriever.retrieve(query=query, domain=self.domain, top_k=2)
+            rag_context = clinical_retriever.format_for_prompt(rag_hits)
+            if rag_context:
+                await rag_cache.set(query=query, domain=self.domain, chunks=[rag_context])
+
+        augmented = context or ""
+        if rag_context:
+            augmented = (
+                f"{augmented}\n\n"
+                f"### [CLINICAL EVIDENCE & THEORETICAL MONOGRAPHS: {self.domain.upper()}]\n"
+                f"{rag_context}\n"
+                f"Incorporate relevant pathophysiological considerations and clinical guidelines from the evidence above."
+            ).strip()
+        return augmented if augmented else None
 
     def _build_augmented_context(self, query: str, context: Optional[str] = None) -> Optional[str]:
         # Active RAG retrieval across domain knowledge (NIH MedQuAD & clinical monographs)
@@ -40,7 +62,7 @@ class BaseAgent:
         api_base: Optional[str] = None,
         provider: str = "ollama"
     ) -> str:
-        augmented_context = self._build_augmented_context(query, context)
+        augmented_context = await self._build_augmented_context_async(query, context)
         prompt_parts = []
         if augmented_context:
             prompt_parts.append(f"Context:\n{augmented_context}")
@@ -80,7 +102,7 @@ class BaseAgent:
         api_base: Optional[str] = None,
         provider: str = "ollama"
     ) -> AsyncGenerator[str, None]:
-        augmented_context = self._build_augmented_context(query, context)
+        augmented_context = await self._build_augmented_context_async(query, context)
         prompt_parts = []
         if augmented_context:
             prompt_parts.append(f"Context:\n{augmented_context}")
