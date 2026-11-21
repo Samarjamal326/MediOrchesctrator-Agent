@@ -22,12 +22,16 @@ export interface ExecutionStage {
 interface ExecutionGraphProps {
   stages: ExecutionStage[];
   activeDomain?: string | null;
+  layout?: 'horizontal' | 'vertical';
 }
 
 export const ExecutionGraph: React.FC<ExecutionGraphProps> = ({
   stages,
-  activeDomain
+  activeDomain,
+  layout = 'horizontal'
 }) => {
+  const isVertical = layout === 'vertical';
+
   const getStageIcon = (stageId: string, status: ExecutionStage['status']) => {
     if (status === 'processing') {
       return <Loader2 className="w-3.5 h-3.5 text-emerald-400 animate-spin" />;
@@ -59,25 +63,25 @@ export const ExecutionGraph: React.FC<ExecutionGraphProps> = ({
   };
 
   return (
-    <div className="w-full bg-zinc-900/90 border border-emerald-500/20 rounded-2xl p-4 shadow-xl backdrop-blur-md animate-in fade-in slide-in-from-top-2 duration-300">
-      <div className="flex items-center justify-between pb-3 border-b border-white/[0.08] mb-3">
+    <div className={`w-full ${isVertical ? 'h-full flex flex-col p-3 bg-zinc-900/40' : 'bg-zinc-900/90 border border-emerald-500/20 rounded-2xl p-4 shadow-xl backdrop-blur-md animate-in fade-in slide-in-from-top-2 duration-300'}`}>
+      <div className="flex items-center justify-between pb-2.5 border-b border-emerald-900/10 dark:border-white/[0.08] mb-3 flex-shrink-0">
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-          <span className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-400">
-            Live Clinical Pipeline
+          <span className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-500 dark:text-emerald-400">
+            {isVertical ? 'Pipeline' : 'Live Clinical Pipeline'}
           </span>
           {activeDomain && (
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 uppercase">
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border border-emerald-500/30 uppercase truncate max-w-[110px]">
               {activeDomain}
             </span>
           )}
         </div>
-        <span className="text-[10px] font-mono text-zinc-400">
-          SSE Real-Time Execution
+        <span className="text-[9px] font-mono text-zinc-400">
+          SSE Stream
         </span>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+      <div className={isVertical ? 'flex flex-col gap-2.5 overflow-y-auto custom-scrollbar flex-1 pr-0.5' : 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2'}>
         {stages.map((st) => {
           const isComplete = st.status === 'complete';
           const isProcessing = st.status === 'processing';
@@ -86,7 +90,7 @@ export const ExecutionGraph: React.FC<ExecutionGraphProps> = ({
           return (
             <div
               key={st.id}
-              className={`flex flex-col p-2.5 rounded-xl border transition-all text-left ${
+              className={`flex ${isVertical ? 'flex-col p-2.5' : 'flex-col p-2.5'} rounded-xl border transition-all text-left ${
                 isProcessing
                   ? 'bg-emerald-500/10 border-emerald-500/60 shadow-[0_0_12px_rgba(16,185,129,0.2)]'
                   : isComplete

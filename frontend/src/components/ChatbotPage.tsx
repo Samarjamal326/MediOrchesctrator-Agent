@@ -108,8 +108,8 @@ export const ChatbotPage: React.FC<ChatbotPageProps> = ({
       <div className="absolute inset-0 canvas-dot-grid pointer-events-none opacity-40" />
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[85%] h-[350px] bg-[radial-gradient(ellipse_60%_50%_at_50%_0%,rgba(16,185,129,0.09),transparent_70%)] dark:bg-[radial-gradient(ellipse_60%_50%_at_50%_0%,rgba(16,185,129,0.06),transparent_70%)] pointer-events-none" />
 
-      {/* Main Dual-Pane Window (Sidebar + Chat Console) */}
-      <div className="relative z-10 w-full max-w-6xl rounded-2xl border border-emerald-900/15 dark:border-emerald-500/20 bg-white/95 dark:bg-[#0c120e]/95 backdrop-blur-xl shadow-2xl overflow-hidden flex flex-row" style={{ height: 'calc(100vh - 120px)', minHeight: 650 }}>
+      {/* Main Multi-Pane Window (Sidebar + Chat Console + Right Execution Panel) */}
+      <div className="relative z-10 w-full max-w-7xl rounded-2xl border border-emerald-900/15 dark:border-emerald-500/20 bg-white/95 dark:bg-[#0c120e]/95 backdrop-blur-xl shadow-2xl overflow-hidden flex flex-row" style={{ height: 'calc(100vh - 120px)', minHeight: 650 }}>
         
         {/* ================= LEFT SIDEBAR (ChatGPT Style) ================= */}
         <aside
@@ -260,14 +260,6 @@ export const ChatbotPage: React.FC<ChatbotPageProps> = ({
 
           {/* Messages Feed */}
           <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 custom-scrollbar">
-            {isLoading && executionStages && executionStages.length > 0 && (
-              <div className="mb-4">
-                <ExecutionGraph
-                  stages={executionStages}
-                  activeDomain={currentRoutedDomain}
-                />
-              </div>
-            )}
             {messages.map((msg) => {
               const isUser = msg.sender === 'user';
               const domainDef = TWELVE_MEDICAL_DOMAINS.find(d => d.domain === msg.domain);
@@ -396,6 +388,17 @@ export const ChatbotPage: React.FC<ChatbotPageProps> = ({
             </div>
           </div>
         </main>
+
+        {/* ================= RIGHT SSE EXECUTION SIDEBAR ================= */}
+        {executionStages && executionStages.length > 0 && (
+          <aside className="w-64 lg:w-72 flex-shrink-0 border-l border-emerald-900/10 dark:border-white/[0.08] bg-[#f8faf8]/70 dark:bg-[#0a0f0c]/90 hidden md:flex flex-col">
+            <ExecutionGraph
+              stages={executionStages}
+              activeDomain={currentRoutedDomain}
+              layout="vertical"
+            />
+          </aside>
+        )}
       </div>
     </div>
   );
