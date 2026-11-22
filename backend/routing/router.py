@@ -1,8 +1,12 @@
 import json
 import re
-from typing import List
+import logging
+from typing import List, Tuple
 from config import settings
 from core.llm import llm_service
+from routing.embedding_router import embedding_router
+
+logger = logging.getLogger("mediorchestrator.router")
 
 class IntentRouter:
     def __init__(
@@ -45,18 +49,37 @@ class IntentRouter:
 
         return self.default_domain
 
-    async def classify(self, query: str) -> str:
+    async def classify_with_meta(self, query: str) -> Tuple[str, str, float]:
+        """
+        Hybrid router:
+        1. Fast embedding prototype match (< 15ms).
+        2. Fallback to LLM classification if confidence < threshold.
+        Returns: (domain, method_used, score)
+        """
+        # Step 1: Fast embedding similarity check
+        fast_domain, conf = embedding_router.route_fast(query)
+        if fast_domain:
+            logger.info(f"Fast embedding router HIT: {fast_domain} (conf={conf:.4f})")
+            return fast_domain, "embedding_centroid", round(conf, 4)
+
+        # Step 2: Fallback to LLM
+        logger.info(f"Confidence {conf:.4f} < 0.72. Invoking LLM intent classification fallback.")
         system_prompt = self._build_system_prompt()
         user_prompt = f"Query: {query}"
-
         try:
             raw_response = await llm_service.generate_response(
                 prompt=user_prompt,
                 system_prompt=system_prompt,
                 temperature=0.0
             )
-            return self._parse_response(raw_response)
-        except Exception:
-            return self.default_domain
+            parsed_domain = self._parse_response(raw_response)
+            return parsed_domain, "llm_fallback", 1.0
+        except Exception as e:
+            logger.warning(f"LLM routing failed: {e}. Using default domain {self.default_domain}.")
+            return self.default_domain, "default_fallback", 0.0
+
+    async def classify(self, query: str) -> str:
+        domain, _, _ = await self.classify_with_meta(query)
+        return domain
 
 intent_router = IntentRouter()
